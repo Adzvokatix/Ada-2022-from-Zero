@@ -4,36 +4,21 @@ An entry-level programming course in 15 lessons and 47 exercises, written for Ad
 
 **0 of 47 done**
 
-[Start hereSetup](#setup)
-[Lesson 1Hello, world](#hello)
-[Lesson 2Types and variables](#variables)
-[Lesson 3Arithmetic](#arithmetic)
-[Lesson 4Input](#input)
-[Lesson 5Decisions](#decisions)
-[Lesson 6Loops](#loops)
-[Lesson 7Your own types](#types)
-[Lesson 8Arrays](#arrays)
-[Lesson 9Subprograms](#subprograms)
-[Lesson 10Strings](#strings)
-[Lesson 11Records](#records)
-[Lesson 12Packages](#packages)
-[Lesson 13Errors](#exceptions)
-[Lesson 14Project](#project)
-
-[Setup](#setup)
-[1 Hello, world](#hello)
-[2 Types and variables](#variables)
-[3 Arithmetic](#arithmetic)
-[4 Input](#input)[5 Decisions](#decisions)
-[6 Loops](#loops)
-[7 Your own types](#types)
-[8 Arrays](#arrays)
-[9 Subprograms](#subprograms)
-[10 Strings](#strings)
-[11 Records](#records)
-[12 Packages](#packages)
-[13 Errors](#exceptions)
-[14 Project](#project)
+[Start here: Setup](#setup)
+[Lesson 1 Hello, world](#hello)
+[Lesson 2 Types and variables](#variables)
+[Lesson 3 Arithmetic](#arithmetic)
+[Lesson 4 Input](#input)
+[Lesson 5 Decisions](#decisions)
+[Lesson 6 Loops](#loops)
+[Lesson 7 Your own types](#types)
+[Lesson 8 Arrays](#arrays)
+[Lesson 9 Subprograms](#subprograms)
+[Lesson 10 Strings](#strings)
+[Lesson 11 Records](#records)
+[Lesson 12 Packages](#packages)
+[Lesson 13 Errors](#exceptions)
+[Lesson 14 Project](#project)
 
 0
 
@@ -47,7 +32,7 @@ Do the steps in order. Copy one box, paste it into the terminal, press Enter, an
 
 Your computer
 
-### 1Open a terminal and install the compiler
+### 1 Open a terminal and install the compiler
 
 On Linux
 
@@ -179,7 +164,7 @@ On Mac
 
 In Finder, choose Go → Home, and it's the `ada-course` folder there.
 
-### 3Create hello.adb with the program in it
+### 3 Create hello.adb with the program in it
 
 This is the program. Press its Copy button:
 
@@ -229,7 +214,7 @@ cat hello.adb
 
 **You should see** `ls` list `hello.adb`, and `cat` print the whole program starting with `with Ada.Text_IO;`. If `cat` prints nothing, the file is empty: go back to step 3. If it prints the commands from this page instead of the program, you pasted the wrong box.
 
-### 5Compile it
+### 5 Compile it
 
 Terminal
 
@@ -251,7 +236,7 @@ On Mac
 
 The program is the file called `hello`.
 
-### 6Run it
+### 6 Run it
 
 Terminal
 
