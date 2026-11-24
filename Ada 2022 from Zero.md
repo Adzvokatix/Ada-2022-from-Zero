@@ -34,7 +34,7 @@ An entry-level programming course in 15 lessons and 47 exercises, written for Ad
 
 [Lesson 14 Project](#project)
 
-#0
+## 0
 
 ## Get a compiler running
 
