@@ -1,40 +1,14 @@
 # Ada 2022 from Zero
 
-An entry-level programming course in 15 lessons and 47 exercises, written for Ada 2022. All 80 programs on this page went through GNAT 13.3, and every terminal shows exactly what the compiler and the program printed.
+An entry-level programming course in 16 lessons and 52 exercises, written for Ada 2022. All 106 programs on this page went through GNAT 13.3, and every terminal shows exactly what the compiler and the program printed. Stuck on a word? It's in the [glossary](#glossary).
 
-**0 of 47 done**
+**0 of 52 done**
 
-[Start here: Setup](#0)
+[Start here0Setup](#setup)[Lesson 1Hello, world](#hello)[Lesson 2Types and variables](#variables)[Lesson 3Arithmetic](#arithmetic)[Lesson 4Input](#input)[Lesson 5Decisions](#decisions)[Lesson 6Loops](#loops)[Lesson 7Your own types](#types)[Lesson 8Arrays](#arrays)[Lesson 9Subprograms](#subprograms)[Lesson 10Strings](#strings)[Lesson 11Records](#records)[Lesson 12Packages](#packages)[Lesson 13Errors](#exceptions)[Lesson 14Contracts](#contracts)[Lesson 15Project](#project)
 
-[Lesson 1 Hello, world](#1)
+[Setup](#setup)[1 Hello, world](#hello)[2 Types and variables](#variables)[3 Arithmetic](#arithmetic)[4 Input](#input)[5 Decisions](#decisions)[6 Loops](#loops)[7 Your own types](#types)[8 Arrays](#arrays)[9 Subprograms](#subprograms)[10 Strings](#strings)[11 Records](#records)[12 Packages](#packages)[13 Errors](#exceptions)[14 Contracts](#contracts)[15 Project](#project)[Glossary](#glossary)
 
-[Lesson 2 Types and variables](#2)
-
-[Lesson 3 Arithmetic](#3)
-
-[Lesson 4 Input](#4)
-
-[Lesson 5 Decisions](#5)
-
-[Lesson 6 Loops](#6)
-
-[Lesson 7 Your own types](#7)
-
-[Lesson 8 Arrays](#8)
-
-[Lesson 9 Subprograms](#9)
-
-[Lesson 10 Strings](#10)
-
-[Lesson 11 Records](#11)
-
-[Lesson 12 Packages](#12)
-
-[Lesson 13 Errors](#13)
-
-[Lesson 14 Project](#14)
-
-# 0
+0
 
 ## Get a compiler running
 
@@ -46,7 +20,7 @@ Do the steps in order. Copy one box, paste it into the terminal, press Enter, an
 
 Your computer
 
-### 1 Open a terminal and install the compiler
+### 1Open a terminal and install the compiler
 
 On Linux
 
@@ -178,7 +152,7 @@ On Mac
 
 In Finder, choose Go → Home, and it's the `ada-course` folder there.
 
-### 3 Create hello.adb with the program in it
+### 3Create hello.adb with the program in it
 
 This is the program. Press its Copy button:
 
@@ -228,7 +202,7 @@ cat hello.adb
 
 **You should see** `ls` list `hello.adb`, and `cat` print the whole program starting with `with Ada.Text_IO;`. If `cat` prints nothing, the file is empty: go back to step 3. If it prints the commands from this page instead of the program, you pasted the wrong box.
 
-### 5 Compile it
+### 5Compile it
 
 Terminal
 
@@ -250,7 +224,7 @@ On Mac
 
 The program is the file called `hello`.
 
-### 6 Run it
+### 6Run it
 
 Terminal
 
@@ -296,7 +270,7 @@ Done. Mark the checkpoint below and go to lesson 1, which explains every line of
 | `gnatmake` | Compiles your file and anything it depends on, then builds the program |
 | `-q` | Quiet: print nothing unless something is wrong |
 | `-gnat2022` | Use the Ada 2022 language. GNAT 13 defaults to Ada 2012, so this matters |
-| `-gnata` | Turn on contract checks (lesson 9). Off by default, so always include it while learning |
+| `-gnata` | Turn on contract checks (lessons 9 and 14). Off by default, so always include it while learning |
 | `hello.adb` | The file to build. The program comes out named `hello` |
 | `gnatclean hello` | Deletes the `.o` and `.ali` leftovers when you want a tidy folder |
 
@@ -335,7 +309,7 @@ If it doesn't work
 
 Find the exact message you're seeing in the table above. If it isn't there, run these three and compare: `pwd` should end in `ada-course`, `ls` should list `hello.adb`, and `head -1 hello.adb` should print `with Ada.Text_IO; use Ada.Text_IO;`. The first one that doesn't match is the step to redo.
 
-# 1
+1
 
 ## Hello, world
 
@@ -372,7 +346,9 @@ That blank line came from New_Line.
 Read it top to bottom. `with Ada.Text_IO;` asks for the standard library package that does text input and output. `use Ada.Text_IO;` lets you write `Put_Line` instead of the full `Ada.Text_IO.Put_Line`. (Both get a full explanation below.) Then comes the main procedure: its name, the word `is`, `begin`, the statements, and `end Hello;` with the name repeated.
 
 - Text in double quotes, like `"Hello, world!"`, is a *string literal*: text typed straight into the program, used exactly as written. The quotes only mark where it starts and ends, so `"Hi"` is two characters. Without quotes, a word is a name the program looks up (lesson 2), not text. To put a quote inside, write it twice: `"She said ""hi"""` prints `She said "hi"`. A string literal must fit on one line.
-- Every statement ends with a semicolon.
+- A *statement* is one instruction for the computer to carry out, like `Put_Line ("Hello, world!");`. Statements run one after another, top to bottom, and every one ends with a semicolon.
+- A *procedure* is a named list of statements. Every program has a main procedure, here `Hello`, and running the program means running its statements from `begin` to `end`.
+- The words in bold in this page's code, like `procedure`, `is`, `begin` and `end`, are *keywords* (Ada calls them reserved words). Each has a fixed meaning, so you can't use one as a name.
 - Ada ignores letter case: `PUT_LINE` and `put_line` work too. The convention is `Mixed_Case_With_Underscores`.
 - Two dashes start a comment: `-- the compiler ignores this`.
 
@@ -491,7 +467,7 @@ $ grep -n -A2 "procedure Put_Line" /usr/lib/gcc/x86_64-linux-gnu/13/adainclude/a
 568-   with
 ```
 
-There are two `Put_Line`s. The first also takes a `File` and writes to that file; the second writes to the screen, and that's the one you've been calling. Ada picks between them by looking at what you pass in, which is called *overloading*. The `with` on line 568 starts a contract, a promise about what the procedure does (lesson 9): the same word doing a different job.
+There are two `Put_Line`s. The first also takes a `File` and writes to that file; the second writes to the screen, and that's the one you've been calling. Ada picks between them by looking at what you pass in, which is called *overloading*. The `with` on line 568 starts a contract, a promise about what the procedure does (lesson 14 reads this one): the same word doing a different job.
 
 Building runs three tools, which `-q` normally hides. Leave it off to watch:
 
@@ -889,7 +865,7 @@ That blank line came from New_Line.
 
 Every `Put`, `Put_Line` and `New_Line` gets `Ada.Text_IO.` in front. That's why most programs add the `use` line.
 
-# 2
+2
 
 ## Types and variables
 
@@ -1031,6 +1007,45 @@ Ready? TRUE
 
 Variables are declared between `is` and `begin` as `Name : Type := starting value;`. `:=` means "store this". It is not the same as `=`, which asks "are these equal?". A `constant` gets its value once and can never change, which the compiler enforces.
 
+### Choosing names
+
+The names you make up, for variables, constants, procedures and types, are called *identifiers*. Ada's rules for them:
+
+- Letters, digits and underscores only: `Total_Miles`, `Line_2`.
+- Start with a letter. `2nd_Place` isn't allowed; `Second_Place` is.
+- No spaces. Join words with an underscore, but never two underscores in a row, and never one at the end.
+- Not a keyword. `Begin`, `End` and `Type` are taken.
+- Capitals don't matter: `Age`, `AGE` and `age` are the same name. Pick one spelling and stick to it.
+
+Here are three broken names in one program:
+
+bad_names.adb
+
+```
+procedure Bad_Names is
+   2nd_Place    : Integer := 2;
+   Total Amount : Integer := 0;
+   Begin        : Integer := 1;
+begin
+   null;
+end Bad_Names;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata bad_names.adb
+bad_names.adb:2:04: error: identifier may not start with digit
+bad_names.adb:3:04: error: declaration expected
+bad_names.adb:4:16: error: statement expected
+bad_names.adb:7:01: error: "end;" expected for "begin" at line 5
+gnatmake: "bad_names.adb" compilation error
+```
+
+Only the first message names the real problem. For `Total Amount`, GNAT reads `Total`, expects a colon, finds another word, and can only say it expected a declaration. `Begin` is the keyword `begin`, so GNAT decides the declarations have ended and the statements have started, and every message after that comes from the confusion. When messages stop making sense, fix the first one and compile again.
+
+Good names say what a value means. `Miles_Driven` beats `M` or `X2`, because you'll read your code far more often than you write it.
+
 `&` joins strings and characters. `X'Image` turns a value into text; the apostrophe introduces an *attribute*, a built-in fact about something. Writing `Age'Image` straight on a variable is new in Ada 2022; older code says `Integer'Image (Age)`.
 
 Look closely at the output. `'Image` puts a space in front of numbers that aren't negative (room for a minus sign), writes Floats in scientific notation (`1.82000E+00` means 1.82 × 10⁰) and spells `True` in capitals. Lesson 3 shows nicer number formatting.
@@ -1081,7 +1096,7 @@ raised CONSTRAINT_ERROR : limits.adb:14 overflow check failed
 - `Integer'First` and `Integer'Last` are the smallest and largest Integers on this compiler. 32 bits can hold 4,294,967,296 different values. Zero takes one of the non-negative slots, which is why the negative side reaches one further.
 - `Long_Long_Integer` is a bigger built-in type, 64 bits on GNAT, for numbers past 2 billion.
 - `Big_Count` is a type declared by stating the range it needs. You say which values make sense and the compiler picks a size that holds them. Lesson 7 covers this properly.
-- Adding 1 to the largest Integer doesn't quietly wrap around to a big negative number, as it often does in C. Ada stops the program with `Constraint_Error` and names the line.
+- Adding 1 to the largest Integer doesn't quietly wrap around to a big negative number, as it often does in C. Ada stops the program with `Constraint_Error` and names the line. Constraint_Error is one of Ada's *exceptions*: signals that something went wrong while the program was running. You'll meet it often; lesson 13 shows how to catch exceptions and carry on.
 
 GNAT even warned before the program ran, because it could work out that `Count` already held the largest Integer. Usually it can't: when a number comes from the user (lesson 4) or from a calculation, the check while the program runs is what catches it.
 
@@ -1345,7 +1360,7 @@ Solution
 
 If you picked differently and can say why, that's often fine. Choosing a type is a decision about what the value means, and that's the habit Ada wants you to build.
 
-# 3
+3
 
 ## Arithmetic
 
@@ -1359,6 +1374,8 @@ Ada does maths the way you expect, until you mix types or divide whole numbers.
 | `rem` | remainder, takes the sign of the left side | `-7 rem 2` | −1 |
 | `**` | power | `2 ** 10` | 1024 |
 | `abs` | absolute value | `abs (-5)` | 5 |
+
+Three words you'll see in GNAT's messages. An *expression* is anything that works out to a value: `2 + 3`, `Total_Minutes / 60`, or just `Age`. An *operator* is the symbol that does the work, like `+` or `mod`. The values on each side of it are its *operands*: in `Miles / Days` the operator is `/`, the left operand is `Miles` and the right operand is `Days`.
 
 arithmetic.adb
 
@@ -1409,9 +1426,47 @@ Average of 7 and 2: 4.5
 Count: 15
 ```
 
-`Ada.Float_Text_IO.Put` prints a Float the way people read it. `Fore` is the minimum number of digits before the point, `Aft` the digits after it, and `Exp => 0` turns scientific notation off.
+`Ada.Float_Text_IO.Put` prints a Float the way people read it. `Fore` is the minimum number of digits before the point, `Aft` the digits after it, and `Exp => 0` turns scientific notation off. Each setting is given by name with `=>`, which reads as "gets": `Aft => 2` means "Aft gets 2". Naming settings means they can't be mixed up. Lesson 9 shows the same thing for procedures you write yourself.
 
 `Count := @ + 5;` uses the Ada 2022 *target name* `@`, which stands for whatever is on the left of `:=`. It saves retyping long names.
+
+### Which part goes first
+
+When an expression has several operators, Ada follows the rules you learned at school: powers first, then multiplying and dividing, then adding and subtracting, and operators of equal rank from left to right. Brackets override all of it.
+
+precedence.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Precedence is
+begin
+   Put_Line ("2 + 3 * 4   =" & Integer'Image (2 + 3 * 4));
+   Put_Line ("(2 + 3) * 4 =" & Integer'Image ((2 + 3) * 4));
+   Put_Line ("10 - 4 - 3  =" & Integer'Image (10 - 4 - 3));
+   Put_Line ("2 * 3 ** 2  =" & Integer'Image (2 * 3 ** 2));
+   Put_Line ("-2 ** 2     =" & Integer'Image (-2 ** 2));
+   Put_Line ("(-2) ** 2   =" & Integer'Image ((-2) ** 2));
+end Precedence;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata precedence.adb
+$ ./precedence
+2 + 3 * 4   = 14
+(2 + 3) * 4 = 20
+10 - 4 - 3  = 3
+2 * 3 ** 2  = 18
+-2 ** 2     =-4
+(-2) ** 2   = 4
+```
+
+- `2 + 3 * 4` is 14, because `*` goes before `+`.
+- `10 - 4 - 3` works left to right: 6, then 3.
+- `-2 ** 2` is −4. The power is worked out first and the minus applied after, as in maths. Write `(-2) ** 2` to square −2.
+- When in doubt, add brackets. They cost nothing and make the order obvious to the next reader.
 
 ### Dividing whole numbers
 
@@ -1851,7 +1906,7 @@ $ ./predict_math
 
 5 fits into 17 three times with 2 left over. −17 / 5 chops toward zero to −3, and its `rem` keeps the minus sign: −2. `mod` must land between 0 and 4, and −17 = −4 × 5 + 3, so it's 3. 17.0 / 2.0 is 8.5, and converting a half rounds away from zero, to 9.
 
-# 4
+4
 
 ## Reading what the user types
 
@@ -2314,7 +2369,7 @@ Quantity: 40
 Ordered 40 x bolts
 ```
 
-# 5
+5
 
 ## Making decisions
 
@@ -2364,13 +2419,58 @@ Weekend
 Result: pass
 ```
 
-An `if` checks its conditions in order and runs the first branch that is true; `else` catches everything else. Compare with `= /= < <= > >=`. Note that "not equal" is `/=`.
+A *condition* is an expression whose value is `True` or `False`, like `Score >= 90`. An `if` checks its conditions in order and runs the first *branch* (the statements under a condition) whose condition is true. `else` catches everything else. Only one branch ever runs. Compare with `= /= < <= > >=`; note that "not equal" is `/=`.
 
-Combine conditions with `and`, `or` and `not`. `and then` and `or else` stop early: in `B /= 0 and then A / B > 2` the division never runs when B is zero.
+### and, or, not
 
-A `case` picks a branch by value. The compiler checks that every possible value is covered, so you either list them all or finish with `when others`. Choices can be ranges (`1 .. 5`) or alternatives (`6 | 7`).
+Conditions combine with `and`, `or` and `not`. This table shows every case:
 
-`(if Score >= 70 then "pass" else "fail")` is an *if expression*: it produces a value instead of running statements. There are case expressions too; the gradebook in lesson 14 uses one.
+| A | B | A and B | A or B | not A |
+| --- | --- | --- | --- | --- |
+| True | True | True | True | False |
+| True | False | False | True | False |
+| False | True | False | True | True |
+| False | False | False | False | True |
+
+`and` is only True when both sides are. `or` is True when at least one side is. `not` flips True and False.
+
+`and` always works out both sides. `and then` stops as soon as the left side is False, because the answer is already known, so the right side never runs. That matters when the right side is only safe if the left side is true:
+
+short_circuit.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Short_Circuit is
+   Total : constant Integer := 50;
+   Count : Integer := 0;
+begin
+   if Count /= 0 and then Total / Count > 10 then
+      Put_Line ("Average is above 10");
+   else
+      Put_Line ("and then: the division was skipped");
+   end if;
+
+   if Count /= 0 and Total / Count > 10 then
+      Put_Line ("Average is above 10");
+   end if;
+   Put_Line ("You will never see this line.");
+end Short_Circuit;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata short_circuit.adb
+short_circuit.adb:13:30: warning: division by zero [enabled by default]
+short_circuit.adb:13:30: warning: Constraint_Error will be raised at run time [enabled by default]
+$ ./short_circuit
+and then: the division was skipped
+
+raised CONSTRAINT_ERROR : short_circuit.adb:13 divide by zero
+```
+
+`or else` is the same idea for `or`: it stops as soon as the left side is True.
 
 ### Ada makes you bracket mixed logic
 
@@ -2395,8 +2495,44 @@ and_or.adb:5:52: error: mixed logical operators in expression
 gnatmake: "and_or.adb" compilation error
 ```
 
+### case
+
+A `case` picks a branch by comparing one value against lists of *choices*. A choice can be a single value, a range (`1 .. 5` means 1 to 5, both included) or alternatives (`6 | 7`, read "6 or 7"). The compiler checks that every possible value is covered, and an Integer has over four billion of them:
+
+case_missing.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Case_Missing is
+   Day : constant Integer := 6;
+begin
+   case Day is
+      when 1 .. 5 => Put_Line ("Weekday");
+      when 6 | 7  => Put_Line ("Weekend");
+   end case;
+end Case_Missing;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata case_missing.adb
+case_missing.adb:6:04: error: missing case values: -16#8000_0000# .. 0
+case_missing.adb:6:04: error: missing case values: 8 .. 16#7FFF_FFFF#
+gnatmake: "case_missing.adb" compilation error
+```
+
+GNAT lists the gaps. The odd-looking numbers are written in base 16, Ada's notation for numbers in other bases: `16#8000_0000#` is the smallest Integer, −2,147,483,648, and `16#7FFF_FFFF#` is the largest. The usual fix is a last choice of `when others =>`, which catches every value not already listed.
+
+### Statements and expressions
+
+Everything above is a *statement*: it does something. `(if Score >= 70 then "pass" else "fail")` is different. It's an *if expression*, which works out to a value, here the String "pass" or "fail", so it can go anywhere a value can, such as inside a `Put_Line`. Because it has to produce a value, it needs an `else` (Booleans are the one exception, and can wait). There are case expressions too; the gradebook in lesson 15 uses one.
+
 #### Remember
 
+- A condition is an expression that's True or False
+- `and then` skips the right side when the left is False
 - `if ... then ... elsif ... else ... end if;`
 - `case X is when ... => ... end case;`
 - Not equal is `/=`
@@ -2581,7 +2717,7 @@ Year: 2028
  2028 is a leap year
 ```
 
-# 6
+6
 
 ## Loops
 
@@ -2630,9 +2766,44 @@ First power of 2 past 100: 128
 Sum: 35
 ```
 
-- `for I in 1 .. 5 loop` counts through a range. The loop creates `I` itself, and you can't change it inside the loop. Add `reverse` to count down.
+- `for I in 1 .. 5 loop` counts through a *range*: `A .. B` means every whole value from A up to B, both included. Each trip through the loop's statements is one *iteration*; this loop makes five. The loop creates `I` itself, and you can't change it. `I` also only exists inside the loop: the same scope rule as lesson 4's blocks. Add `reverse` to count down.
 - `while Condition loop` checks before each pass and stops when the condition turns false.
 - A bare `loop` runs until an `exit when` fires. Use it when the test belongs in the middle, such as "read a line, stop if it's blank, otherwise process it".
+
+A range only counts up. If A is bigger than B, the range is empty and the loop runs zero times, with no error. To count down, keep the smaller number first and add `reverse`:
+
+empty_range.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Empty_Range is
+begin
+   Put ("for I in 5 .. 1:        ");
+   for I in 5 .. 1 loop
+      Put (I'Image);
+   end loop;
+   New_Line;
+
+   Put ("for I in reverse 1 .. 5:");
+   for I in reverse 1 .. 5 loop
+      Put (I'Image);
+   end loop;
+   New_Line;
+end Empty_Range;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata empty_range.adb
+empty_range.adb:6:15: warning: loop range is null, loop will not execute [enabled by default]
+$ ./empty_range
+for I in 5 .. 1:        
+for I in reverse 1 .. 5: 5 4 3 2 1
+```
+
+GNAT noticed the empty range and warned, but the program still compiled and ran. An empty loop is legal; it's just almost never what you meant.
 
 A loop that never meets its stopping condition runs forever. Press Ctrl+C in the terminal to stop it.
 
@@ -2640,6 +2811,7 @@ Loops can sit inside loops. `Ada.Integer_Text_IO.Put (X, Width => 4)` prints a n
 
 #### Remember
 
+- `A .. B` includes both ends; empty if A > B
 - `for I in A .. B loop`
 - `while C loop`
 - `loop ... exit when C; ... end loop;`
@@ -2873,7 +3045,7 @@ $ ./hailstone
 Highest value along the way: 9232
 ```
 
-# 7
+7
 
 ## Making your own types
 
@@ -2928,7 +3100,42 @@ raised CONSTRAINT_ERROR : my_types.adb:23 range check failed
 
 `type Percent is range 0 .. 100` makes an integer type that can only hold 0 to 100. When the program tried to store 101, it stopped with `Constraint_Error` and named the exact line. In many languages that bug would slip through and corrupt data later.
 
-A `subtype` narrows an existing type and still mixes freely with it; `Natural` is just `subtype Natural is Integer range 0 .. Integer'Last`. A new type made with `is new` is a different type that won't mix by accident:
+### subtype or new type?
+
+Both of these hold 0 to 100, but they behave very differently:
+
+subtype_vs_type.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Subtype_Vs_Type is
+   subtype Score   is Integer range 0 .. 100;
+   type    Percent is range 0 .. 100;
+
+   Count  : Integer := 40;
+   Mark   : constant Score   := 75;
+   Charge : constant Percent := 75;
+begin
+   Count := Count + Mark;     --  fine: a Score is still an Integer
+   Count := Count + Charge;   --  refused: Percent is a type of its own
+   Put_Line (Count'Image);
+end Subtype_Vs_Type;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata subtype_vs_type.adb
+subtype_vs_type.adb:12:19: error: invalid operand types for operator "+"
+subtype_vs_type.adb:12:19: error: left operand has type "Standard.Integer"
+subtype_vs_type.adb:12:19: error: right operand has type "Percent" defined at line 5
+gnatmake: "subtype_vs_type.adb" compilation error
+```
+
+A `subtype` is the same type with an extra rule. A `Score` *is* an Integer that must stay between 0 and 100, so it mixes freely with other Integers, and the range is checked whenever a value goes into it. `Natural` and `Positive` are subtypes: `subtype Natural is Integer range 0 .. Integer'Last`.
+
+A `type` declaration makes a brand-new type. `Percent` holds the same numbers, but Ada treats it as unrelated to Integer, so mixing them is refused until you convert on purpose: `Count + Integer (Charge)`. `is new` does the same starting from an existing type:
 
 units.adb
 
@@ -2952,7 +3159,12 @@ units.adb:7:14: error: found type "Fahrenheit" defined at line 3
 gnatmake: "units.adb" compilation error
 ```
 
-That's how you stop someone adding Celsius to Fahrenheit, or metres to feet.
+| Use | When | For example |
+| --- | --- | --- |
+| `subtype` | The values are the same kind of thing, just limited | An exam score is still a number of points |
+| new `type` | Mixing them up would be a bug | Celsius and Fahrenheit, meters and feet, dollars and euros |
+
+That's how you stop someone adding Celsius to Fahrenheit: the compiler refuses.
 
 #### Remember
 
@@ -3126,7 +3338,7 @@ Yellow: slow down
 
 The compiler checks that the `case` covers all three colors. Add a fourth color to the type and it will point at this `case` until you handle it.
 
-# 8
+8
 
 ## Arrays
 
@@ -3190,6 +3402,8 @@ Sum with 'Reduce: 400
 80 or more: 100 88
 ```
 
+Three words to know. Each value in an array is an *element*. Its position is its *index*: `Scores (2)` means "the element at index 2". And a value for a whole array written out at once, like `[72, 95, 88, 61, 79]`, is an *aggregate*.
+
 `type Score_List is array (Positive range <>) of Integer;` describes a list of Integers indexed by Positive numbers. The `<>` ("box") means each list decides its own bounds; `Scores` gets 1 to 5 from the five values in its aggregate.
 
 Square brackets for array aggregates are new in Ada 2022. You can also name positions, `[1 => 72, 2 => 95, others => 0]`, and use `[]` for an empty array.
@@ -3203,11 +3417,40 @@ Square brackets for array aggregates are new in Ada 2022. You can also name posi
 
 - `for S of Scores loop` visits each element. Use `for I in Scores'Range loop` when you need the position.
 - `for S of Scores when S >= 80 loop` adds an Ada 2022 *filter*: only matching elements reach the body.
-- `Scores'Reduce ("+", 0)` combines every element with `+`, starting from 0 (Ada 2022).
-- Reading `Scores (6)` raises Constraint_Error. Ada checks every index.
+- `Scores'Reduce ("+", 0)` combines every element with `+`, starting from 0 (Ada 2022). Here it works out 0 + 72 + 100 + 88 + 61 + 79, one element at a time, to get 400.
 - `Scores'Image` works in Ada 2022, but the compiler chooses the layout; GNAT 13 starts a new line first.
 
-An array can be indexed by any discrete type, including your own enumerations: `type Hour_Log is array (Day) of Natural;` gives one slot per day, named `Hours (Mon)`. Exercise 8.3 uses this.
+Ada checks every index. Asking for an element that isn't there stops the program, instead of quietly reading whatever memory sits past the end, which is a classic source of security holes in other languages:
+
+bad_index.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Bad_Index is
+   type Score_List is array (Positive range <>) of Integer;
+
+   Scores : constant Score_List := [72, 95, 88, 61, 79];
+   Which  : Integer := 6;
+begin
+   Put_Line ("Score 5 is" & Scores (5)'Image);
+   Put_Line ("Score 6 is" & Scores (Which)'Image);
+end Bad_Index;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata bad_index.adb
+bad_index.adb:10:37: warning: value not in range of subtype of "Standard.Integer" defined at line 6 [enabled by default]
+bad_index.adb:10:37: warning: Constraint_Error will be raised at run time [enabled by default]
+$ ./bad_index
+Score 5 is 79
+
+raised CONSTRAINT_ERROR : bad_index.adb:10 range check failed
+```
+
+An array can be indexed by any *discrete* type, meaning a type whose values can be counted off one by one: integer types and enumerations, but not Float. That includes your own enumerations: `type Hour_Log is array (Day) of Natural;` gives one slot per day, named `Hours (Mon)`. Exercise 8.3 uses this.
 
 #### Remember
 
@@ -3398,7 +3641,7 @@ Busiest day: THU
 Overtime:     9 h
 ```
 
-# 9
+9
 
 ## Procedures and functions
 
@@ -3461,7 +3704,16 @@ Hello, Grace!
 Hello, Grace!
 ```
 
-A `function` calculates and `return`s a value; you use it inside an expression. A `procedure` does something and is called as a statement on its own. Both are declared before the `begin` of whatever uses them.
+A *subprogram* is a procedure or a function: a named piece of work you write once and use as often as you like. Using one is called *calling* it. The words that go with them:
+
+| Word | Meaning | In this program |
+| --- | --- | --- |
+| parameter | A name in a subprogram's first line that stands for a value it will be given | `X` in `Square (X : Integer)` |
+| argument | The actual value given in a call | `7` in `Square (7)` |
+| return value | What a function hands back to whoever called it | 49 |
+| local variable | A variable declared inside a subprogram. It's made fresh on every call and disappears when the call ends | `Temp` in `Swap` |
+
+A `function` calculates and `return`s a value, so you use it inside an expression, as in `Square (7)'Image`. A `procedure` does something and is called as a statement on its own, like `Swap (X, Y);`. Both are declared before the `begin` of whatever uses them.
 
 | Mode | Inside the subprogram | Used for |
 | --- | --- | --- |
@@ -3469,11 +3721,39 @@ A `function` calculates and `return`s a value; you use it inside an expression. 
 | `out` | write before you read | results coming back from a procedure |
 | `in out` | read and write | changing the caller's variable, like Swap |
 
-`function Square (X : Integer) return Integer is (X * X);` is an *expression function*: a one-line function whose body is a single expression in brackets. Calls can name their parameters, `Greet (Name => "Grace", Times => 2)`, and a parameter with a default can be left out.
+`in` really is read-only. Try to change one and GNAT refuses:
+
+in_param.adb
+
+```
+procedure In_Param is
+
+   procedure Double (X : Integer) is
+   begin
+      X := X * 2;
+   end Double;
+
+   N : Integer := 4;
+begin
+   Double (N);
+end In_Param;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata in_param.adb
+in_param.adb:5:07: error: assignment to "in" mode parameter not allowed
+gnatmake: "in_param.adb" compilation error
+```
+
+If a procedure is meant to change its argument, say so with `in out`, as `Swap` does. Then anyone reading its first line knows a call can change their variable.
+
+`function Square (X : Integer) return Integer is (X * X);` is an *expression function*: a one-line function whose body is a single expression in brackets. Calls can name their parameters, `Greet (Name => "Grace", Times => 2)`, the same `=>` you used for `Put`'s `Fore` and `Aft` in lesson 3. A parameter with a default value can be left out.
 
 ### Contracts
 
-A precondition (`Pre`) says what must be true when the function is called; a postcondition (`Post`) says what it promises about its result. With `-gnata` they're checked every call:
+A precondition (`Pre`) says what must be true when the function is called; a postcondition (`Post`) says what it promises about its result. Inside a postcondition, `Percent_Of'Result` means "the value this function is about to return". With `-gnata` they're checked on every call:
 
 contracts.adb
 
@@ -3507,6 +3787,8 @@ raised ADA.ASSERTIONS.ASSERTION_ERROR : failed precondition from contracts.adb:7
 ```
 
 The contract caught the bad call before the division ran, and the message names the contract that failed. Contracts also document intent: a reader knows `Whole` can't be zero without reading the body.
+
+Contracts take some getting used to, so lesson 14 is all about them: who's to blame when one fails, `'Old`, what happens without `-gnata`, why they're not for checking user input, and contracts on types.
 
 #### Remember
 
@@ -3703,7 +3985,7 @@ Low: 4   High: 31
 Mean: 16.17
 ```
 
-# 10
+10
 
 ## Working with text
 
@@ -3763,11 +4045,36 @@ Because a String is an array, `Word (1 .. 4)` is a *slice*, `Word'Length` is its
 
 | Package | Useful pieces |
 | --- | --- |
-| `Ada.Strings.Fixed` | `Index` (find), `Count`, `Trim` (strip spaces), `Head` (cut or pad to a width) |
+| `Ada.Strings.Fixed` | `Index` (find; gives 0 when it isn't there), `Count`, `Trim` (strip spaces from the `Left`, `Right` or `Both` ends), `Head` (cut or pad to a width) |
 | `Ada.Characters.Handling` | `To_Upper`, `To_Lower`, `Is_Digit`, `Is_Letter` |
 | `Ada.Strings.Unbounded` | `Unbounded_String`, a string that can grow; `Append`, `To_String`, `Length` |
 
 A plain String can't change length. `Name : String := "Bob";` then `Name := "Robert";` raises Constraint_Error. When text grows, as a log or a sentence being built does, use `Unbounded_String`.
+
+`Unbounded_String` is a different type from `String`, so Ada won't mix them without a conversion, just as with Integer and Float:
+
+unbounded_mix.adb
+
+```
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+
+procedure Unbounded_Mix is
+   Log : Unbounded_String := "start";
+begin
+   null;
+end Unbounded_Mix;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata unbounded_mix.adb
+unbounded_mix.adb:4:30: error: expected private type "Ada.Strings.Unbounded.Unbounded_String"
+unbounded_mix.adb:4:30: error: found a string type
+gnatmake: "unbounded_mix.adb" compilation error
+```
+
+`To_Unbounded_String ("start")` fixes it. `To_String` converts back the other way, for example to print one with `Put_Line`. That's why both appear in the example at the top.
 
 The call `Ada.Strings.Fixed.Count` is written out in full on purpose. `Ada.Text_IO` also has something called `Count`, and with both packages `use`d the short name is ambiguous, so GNAT refuses it. Writing the package name settles it.
 
@@ -3983,7 +4290,7 @@ Decoded: Meet at the Engine, noon.
 
 Decoding shifts by −3. `mod` keeps a negative result inside 0 to 25 because it takes the sign of 26. `rem` would go negative and break.
 
-# 11
+11
 
 ## Records
 
@@ -4047,11 +4354,43 @@ After restock: 200
 Whole bin is worth $69.84
 ```
 
-Fields are reached with a dot: `Bolt.Qty`. An aggregate fills every field at once, by name (`(Name => ..., Qty => 120, Cents => 15)`) or by position. Named is clearer; the compiler checks you didn't forget one.
+Each value inside a record is a *field*; Ada's own word is *component*, which is what GNAT's messages say. Fields are reached with a dot: `Bolt.Qty`. An aggregate, like lesson 8's array ones, fills every field at once, by name (`(Name => ..., Qty => 120, Cents => 15)`) or by position. Named is clearer; the compiler checks you didn't forget one.
 
 `(Bolt with delta Qty => Bolt.Qty + 80)` is an Ada 2022 *delta aggregate*: a copy of `Bolt` with only the listed fields changed. The original stays as it was.
 
-The price is stored as whole cents in a Natural. Floats can't hold most decimal fractions exactly (0.1 is slightly off in binary), and those tiny errors add up in money. Count cents and format at the end.
+The price is stored as whole cents in a Natural, not as dollars in a Float. A Float stores numbers in binary, and most decimal fractions, 0.10 included, can't be written exactly in binary, just as 1/3 can't be written exactly in decimal. Each sale is off by a tiny amount, and the errors pile up:
+
+float_money.adb
+
+```
+with Ada.Text_IO;       use Ada.Text_IO;
+with Ada.Float_Text_IO; use Ada.Float_Text_IO;
+
+procedure Float_Money is
+   Dollars : Float   := 0.0;
+   Cents   : Natural := 0;
+begin
+   for Sale in 1 .. 10_000 loop     --  ten thousand sales of 10 cents
+      Dollars := Dollars + 0.10;
+      Cents   := Cents + 10;
+   end loop;
+   Put ("As Float dollars: ");
+   Put (Dollars, Fore => 1, Aft => 4, Exp => 0);
+   New_Line;
+   Put_Line ("As whole cents:  " & Cents'Image);
+end Float_Money;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata float_money.adb
+$ ./float_money
+As Float dollars: 999.9029
+As whole cents:   100000
+```
+
+Ten thousand sales of 10 cents should come to exactly $1000. The Float total is almost ten cents short; the whole-cent total is exact. Count money in whole cents and only turn it into dollars when you print it.
 
 An array of records, like `Bin`, is how you hold a table of data: one record per row.
 
@@ -4245,11 +4584,23 @@ Trip:  7, 2
 Start is unchanged: 2, 3
 ```
 
-# 12
+12
 
-## Packages: splitting a program into files
+## Packages and specifications
 
-A package bundles related types and subprograms into a unit other programs can use.
+A specification says what a package offers. The body says how it does it. Keeping the two apart is how large Ada programs stay manageable.
+
+### The idea
+
+Think of a wall socket. The faceplate tells you everything you need to use it: the shape of the plug and the voltage you'll get. The wiring behind the wall is someone else's business, and it can be redone without changing the faceplate. In Ada, the faceplate is the *specification* and the wiring is the *body*.
+
+|  | Specification (.ads) | Body (.adb) |
+| --- | --- | --- |
+| Holds | What's offered: types, constants, and subprogram declarations with their contracts | How it works: each subprogram's statements, plus any helpers |
+| Who reads it | Everyone who uses the package | Only the package's author |
+| Change it and | Everything that uses the package is recompiled | Only the body is recompiled |
+
+Code that uses a package is called a *client* of it, and clients only ever see the specification. Here's a small package with a client:
 
 temperature.ads
 
@@ -4309,20 +4660,322 @@ Water boils at 212.0 F
 Body temperature is 37.0 C
 ```
 
-A package comes in two files. The *specification* (`.ads`) lists what others may use: types, constants and subprogram declarations. The *body* (`.adb`) holds how it works. Code that `with`s the package sees only the spec, so you can rewrite the body freely without breaking anything that uses it.
+`temperature.ads` is the specification: two types, a constant and two function declarations, and not a word about how the conversion is done. `temperature.adb` is the body: `package body`, then the two functions in full. `main.adb` is the client: `with Temperature;` gives it the specification, and that's all it gets.
 
 File names follow the package name: `package Temperature` lives in `temperature.ads` and `temperature.adb`. Run `gnatmake` on the main program only; it sees `with Temperature;` and compiles the package for you.
 
+### You've already written specifications
+
+Every subprogram has a specification too: its first line, with its name, parameters and return type, up to the word `is`. In lesson 9, `Square`'s specification is `function Square (X : Integer) return Integer`. End a specification with a semicolon instead of `is`, and you've declared the subprogram without its body, which then comes later or in another file. A package specification is a list of these, gathered in one file, along with the types and constants they use. The two `Put_Line` declarations you read in `a-textio.ads` in lesson 1 are exactly that.
+
+### The spec is enough to compile a client
+
+Because a client only sees the specification, it can be compiled before the body even exists. Here the folder holds only the spec and the main program. `gcc -c` compiles a single file without trying to build a whole program:
+
+Terminal
+
+```
+$ ls
+main.adb
+temperature.ads
+$ gcc -c -gnat2022 -gnata main.adb
+$ ls
+main.adb
+main.ali
+main.o
+temperature.ads
+$ gnatmake -q -gnat2022 -gnata main.adb
+cannot generate code for file temperature.ads (package spec)
+gnatmake: "temperature.ads" compilation error
+```
+
+`main.adb` compiled: GNAT checked every call against the specification and produced `main.o`. Only the full build fails, because a specification on its own can't become machine code. That's what lets a team split up the work: one person writes the specification, and others write code against it while the body is still being built.
+
+### The body must keep the spec's promises
+
+GNAT checks the body against the specification. Every subprogram the specification declares needs a body with exactly the same parameters. Leave one out:
+
+temperature.ads
+
+```
+package Temperature is
+
+   type Celsius    is new Float;
+   type Fahrenheit is new Float;
+
+   Boiling : constant Celsius := 100.0;
+
+   function To_F (C : Celsius) return Fahrenheit;
+   function To_C (F : Fahrenheit) return Celsius;
+
+end Temperature;
+```
+
+temperature.adb
+
+```
+package body Temperature is
+
+   function To_F (C : Celsius) return Fahrenheit is
+     (Fahrenheit (C * 9.0 / 5.0 + 32.0));
+
+end Temperature;
+```
+
+main.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+with Temperature;  use Temperature;
+
+procedure Main is
+begin
+   Put_Line ("Boiling:" & To_F (Boiling)'Image);
+end Main;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata main.adb
+temperature.adb:1:14: error: missing body for "To_C" declared at temperature.ads:9
+gnatmake: "temperature.adb" compilation error
+```
+
+The message names the missing subprogram and the line of the specification that promised it.
+
+### What the body keeps to itself
+
+Anything declared only in the body is invisible to clients. That's the place for helpers the package needs but nobody else should depend on. This body rounds its answers with a helper, `Round_To_Tenth`, that isn't in the specification, so `main` can't call it:
+
+temperature.ads
+
+```
+package Temperature is
+
+   type Celsius    is new Float;
+   type Fahrenheit is new Float;
+
+   Boiling : constant Celsius := 100.0;
+
+   function To_F (C : Celsius) return Fahrenheit;
+   function To_C (F : Fahrenheit) return Celsius;
+
+end Temperature;
+```
+
+temperature.adb
+
+```
+package body Temperature is
+
+   --  Only the body can see this: it isn't in the spec.
+   function Round_To_Tenth (X : Float) return Float is
+     (Float'Rounding (X * 10.0) / 10.0);
+
+   function To_F (C : Celsius) return Fahrenheit is
+     (Fahrenheit (Round_To_Tenth (Float (C) * 9.0 / 5.0 + 32.0)));
+
+   function To_C (F : Fahrenheit) return Celsius is
+     (Celsius (Round_To_Tenth ((Float (F) - 32.0) * 5.0 / 9.0)));
+
+end Temperature;
+```
+
+main.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+with Temperature;  use Temperature;
+
+procedure Main is
+begin
+   Put_Line (Round_To_Tenth (3.14159)'Image);
+end Main;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata main.adb
+main.adb:6:14: error: "Round_To_Tenth" is undefined
+gnatmake: "main.adb" compilation error
+```
+
+As far as the client can tell, `Round_To_Tenth` doesn't exist. The package's author can rename it, change it or delete it without breaking a single client.
+
+### Private types: hiding what's inside a type
+
+A specification can also hide the inside of a type. `type Account is private;` tells clients that the type exists, and nothing more. Its real definition goes in the specification's *private part*, after the word `private`, where the compiler can see it but clients can't use it:
+
+bank_accounts.ads
+
+```
+package Bank_Accounts is
+
+   type Account is private;
+
+   function Balance (A : Account) return Natural;   --  in cents
+
+   procedure Deposit (A : in out Account; Amount : Positive)
+     with Post => Balance (A) = Balance (A)'Old + Amount;
+
+   procedure Withdraw (A : in out Account; Amount : Positive)
+     with Pre  => Amount <= Balance (A),
+          Post => Balance (A) = Balance (A)'Old - Amount;
+
+private
+
+   type Account is record
+      Cents : Natural := 0;
+   end record;
+
+end Bank_Accounts;
+```
+
+bank_accounts.adb
+
+```
+package body Bank_Accounts is
+
+   function Balance (A : Account) return Natural is (A.Cents);
+
+   procedure Deposit (A : in out Account; Amount : Positive) is
+   begin
+      A.Cents := A.Cents + Amount;
+   end Deposit;
+
+   procedure Withdraw (A : in out Account; Amount : Positive) is
+   begin
+      A.Cents := A.Cents - Amount;
+   end Withdraw;
+
+end Bank_Accounts;
+```
+
+main.adb
+
+```
+with Ada.Text_IO;   use Ada.Text_IO;
+with Bank_Accounts; use Bank_Accounts;
+
+procedure Main is
+   Savings : Account;
+begin
+   Deposit (Savings, 2_500);
+   Withdraw (Savings, 400);
+   Put_Line ("Balance:" & Balance (Savings)'Image & " cents");
+end Main;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata main.adb
+$ ./main
+Balance: 2100 cents
+```
+
+- Everything above `private` is the *visible part*: what clients may use. Here that's the type's name and three operations, with their contracts (lesson 14 covers contracts in depth).
+- Below `private`, an Account is a record holding a number of cents (lesson 11). The compiler needs that to know how much memory an Account takes, but clients can't touch the field.
+- So the only way to change a balance is through `Deposit` and `Withdraw`, and their contracts are checked every time. No client can slip a negative balance past them.
+
+Here's a client that tries to reach inside anyway. The specification and body are the same as above; only `main.adb` has changed:
+
+main.adb
+
+```
+with Ada.Text_IO;   use Ada.Text_IO;
+with Bank_Accounts; use Bank_Accounts;
+
+procedure Main is
+   Savings : Account;
+begin
+   Deposit (Savings, 2_500);
+   Savings.Cents := Savings.Cents - 400;   --  reaching inside
+   Put_Line ("Balance:" & Balance (Savings)'Image & " cents");
+end Main;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata main.adb
+main.adb:8:04: error: invalid prefix in selected component "Savings"
+main.adb:8:21: error: invalid prefix in selected component "Savings"
+gnatmake: "main.adb" compilation error
+```
+
+GNAT refuses. A *selected component* is its name for the dot form, `Savings.Cents`, and from `Main`'s side of the fence an Account has nothing after the dot. Because no client can depend on how an Account is built, the author could later store dollars and cents separately, or keep a history of every transaction, and no client would need a single line changed. They would be recompiled, because the private part is in the specification file.
+
+### Splitting saves rebuilding
+
+Clients depend on the specification, not the body, and `gnatmake` knows it. Build once, leaving off `-q` to watch:
+
+Terminal
+
+```
+$ gnatmake -gnat2022 -gnata main.adb
+x86_64-linux-gnu-gcc-13 -c -gnat2022 -gnata main.adb
+x86_64-linux-gnu-gcc-13 -c -gnat2022 -gnata temperature.adb
+x86_64-linux-gnu-gnatbind-13 -x main.ali
+x86_64-linux-gnu-gnatlink-13 main.ali
+```
+
+Now change only the body: `To_F`'s formula from `C * 9.0 / 5.0` to `C * 1.8`, which gives the same answer. Build again:
+
+Terminal
+
+```
+$ gnatmake -gnat2022 -gnata main.adb
+x86_64-linux-gnu-gcc-13 -c -gnat2022 -gnata temperature.adb
+x86_64-linux-gnu-gnatbind-13 -x main.ali
+x86_64-linux-gnu-gnatlink-13 main.ali
+```
+
+Only `temperature.adb` was recompiled. `main.adb` was left alone, because nothing it can see had changed. Now add a line to the specification, a new constant `Freezing`, and build again:
+
+Terminal
+
+```
+$ gnatmake -gnat2022 -gnata main.adb
+x86_64-linux-gnu-gcc-13 -c -gnat2022 -gnata main.adb
+x86_64-linux-gnu-gcc-13 -c -gnat2022 -gnata temperature.adb
+x86_64-linux-gnu-gnatbind-13 -x main.ali
+x86_64-linux-gnu-gnatlink-13 main.ali
+$ ./main
+Water boils at 212.0 F
+Body temperature is 37.0 C
+```
+
+This time both were recompiled, because a change to a specification could affect any client. In a program with hundreds of files, keeping specifications stable and making changes inside bodies saves a lot of rebuilding, and a lot of breakage.
+
+### What goes where
+
+| Put it in | What |
+| --- | --- |
+| The specification | Types clients need (private, if they don't need the inside), constants, subprogram declarations with their contracts, and comments on how to use them |
+| The private part | The full definitions of private types |
+| The body | Every subprogram's statements, helpers, and anything else clients shouldn't depend on |
+
+One more rule of thumb: if only the body needs another package, put its `with` in the body. Then clients don't end up depending on that package too.
+
+You've been using a package since lesson 1. `Ada.Text_IO`'s specification is the `a-textio.ads` file you looked inside, and its body, `a-textio.adb`, sits next to it in the same folder. Your programs only ever saw the specification.
+
 #### Remember
 
-- Spec `.ads`: what. Body `.adb`: how
-- `with Pkg;` to use it
+- Specification `.ads`: what. Body `.adb`: how
+- Clients see only the specification
+- `type T is private;` hides a type's insides
+- Change a body and only it is recompiled
 - Build the main file; gnatmake finds the rest
 
 #### Common mistakes
 
 - Declaring a subprogram in the spec but never writing it in the body
 - File names that don't match the package name
+- Reaching into a private type with a dot
+- Putting helpers in the spec that clients don't need
 
 ### Exercises
 
@@ -4432,7 +5085,235 @@ GCD of 84 and 36: 12
 Digit sum of 2026: 10
 ```
 
-# 13
+Exercise 12.2
+
+#### Body from a specification
+
+You're given a specification and a main program that uses it. Write `tally.adb` so the main program prints the target output. Don't change the specification or the main program.
+
+Target output
+
+```
+$ ./main
+Visitors: 7
+After reset: 0
+```
+
+tally.ads
+
+```
+package Tally is
+
+   type Counter is private;
+
+   function Total (C : Counter) return Natural;
+
+   procedure Add (C : in out Counter; By : Positive := 1)
+     with Post => Total (C) = Total (C)'Old + By;
+
+   procedure Reset (C : in out Counter)
+     with Post => Total (C) = 0;
+
+private
+
+   type Counter is record
+      Count : Natural := 0;
+   end record;
+
+end Tally;
+```
+
+main.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+with Tally;       use Tally;
+
+procedure Main is
+   Visitors : Counter;
+begin
+   Add (Visitors);
+   Add (Visitors);
+   Add (Visitors, By => 5);
+   Put_Line ("Visitors:" & Total (Visitors)'Image);
+   Reset (Visitors);
+   Put_Line ("After reset:" & Total (Visitors)'Image);
+end Main;
+```
+
+Hint
+
+Copy each declaration from the specification into the body, and replace its semicolon with `is` and the statements. Inside the body a Counter is a record, so `C.Count` is available there, even though clients can't see it.
+
+Solution
+
+tally.ads
+
+```
+package Tally is
+
+   type Counter is private;
+
+   function Total (C : Counter) return Natural;
+
+   procedure Add (C : in out Counter; By : Positive := 1)
+     with Post => Total (C) = Total (C)'Old + By;
+
+   procedure Reset (C : in out Counter)
+     with Post => Total (C) = 0;
+
+private
+
+   type Counter is record
+      Count : Natural := 0;
+   end record;
+
+end Tally;
+```
+
+tally.adb
+
+```
+package body Tally is
+
+   procedure Add (C : in out Counter; By : Positive := 1) is
+   begin
+      C.Count := C.Count + By;
+   end Add;
+
+   procedure Reset (C : in out Counter) is
+   begin
+      C.Count := 0;
+   end Reset;
+
+   function Total (C : Counter) return Natural is (C.Count);
+
+end Tally;
+```
+
+main.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+with Tally;       use Tally;
+
+procedure Main is
+   Visitors : Counter;
+begin
+   Add (Visitors);
+   Add (Visitors);
+   Add (Visitors, By => 5);
+   Put_Line ("Visitors:" & Total (Visitors)'Image);
+   Reset (Visitors);
+   Put_Line ("After reset:" & Total (Visitors)'Image);
+end Main;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata main.adb
+$ ./main
+Visitors: 7
+After reset: 0
+```
+
+The contracts in the specification are checked on every call. If `Add` got its sum wrong, its postcondition would say so, and the message would point at the body you wrote.
+
+Exercise 12.3
+
+#### Hands off
+
+This main program won't compile, because it reaches inside a private type. Make it print the target output using only the package's own operations.
+
+Target output
+
+```
+$ ./main
+Balance: 2100 cents
+```
+
+bank_accounts.ads
+
+```
+package Bank_Accounts is
+
+   type Account is private;
+
+   function Balance (A : Account) return Natural;   --  in cents
+
+   procedure Deposit (A : in out Account; Amount : Positive)
+     with Post => Balance (A) = Balance (A)'Old + Amount;
+
+   procedure Withdraw (A : in out Account; Amount : Positive)
+     with Pre  => Amount <= Balance (A),
+          Post => Balance (A) = Balance (A)'Old - Amount;
+
+private
+
+   type Account is record
+      Cents : Natural := 0;
+   end record;
+
+end Bank_Accounts;
+```
+
+main.adb
+
+```
+with Ada.Text_IO;   use Ada.Text_IO;
+with Bank_Accounts; use Bank_Accounts;
+
+procedure Main is
+   Savings : Account;
+begin
+   Deposit (Savings, 2_500);
+   Savings.Cents := Savings.Cents - 400;   --  reaching inside
+   Put_Line ("Balance:" & Balance (Savings)'Image & " cents");
+end Main;
+```
+
+Hint
+
+Which operation in the specification takes money out of an account?
+
+Solution
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata main.adb
+main.adb:8:04: error: invalid prefix in selected component "Savings"
+main.adb:8:21: error: invalid prefix in selected component "Savings"
+gnatmake: "main.adb" compilation error
+```
+
+Replace the line that subtracts from `Savings.Cents` with a call to `Withdraw`. Its precondition and postcondition now guard the change too:
+
+main.adb
+
+```
+with Ada.Text_IO;   use Ada.Text_IO;
+with Bank_Accounts; use Bank_Accounts;
+
+procedure Main is
+   Savings : Account;
+begin
+   Deposit (Savings, 2_500);
+   Withdraw (Savings, 400);
+   Put_Line ("Balance:" & Balance (Savings)'Image & " cents");
+end Main;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata main.adb
+$ ./main
+Balance: 2100 cents
+```
+
+13
 
 ## When things go wrong
 
@@ -4488,16 +5369,64 @@ How many boxes? 5000
 Refused: the truck holds 1000 boxes
 ```
 
+An *exception* is Ada's signal that something went wrong while the program was running. Ada *raises* one when a rule is broken, like a value out of range, and you can raise your own with `raise`. A *handler* is code that catches an exception and decides what to do instead of stopping the program. Handlers go in an `exception` section at the end of a block.
+
 An `exception` section at the end of a block catches errors raised inside it. Here the inner `begin ... exception ... end;` block catches bad input, prints a message, and the surrounding loop asks again. The handler at the bottom of the program catches the exception the program raised itself.
 
 | Exception | Typical cause |
 | --- | --- |
 | `Constraint_Error` | a value out of range, a bad `'Value`, divide by zero, an index past the end |
 | `End_Error` | reading input after it has ended (Ctrl+D) |
-| `Assertion_Error` | a `Pre` or `Post` contract failed |
+| `Assertion_Error` | a `Pre` or `Post` contract or a predicate failed (lesson 14) |
 | your own | `Too_Many : exception;` then `raise Too_Many with "message";` |
 
 `when E : Too_Many =>` names the exception so `Exception_Message (E)` can show its message. Catch only what you can actually handle; an exception nobody catches stops the program and prints where it happened, which is the most useful thing it can do while you're developing.
+
+### Where an exception goes
+
+When an exception is raised, Ada abandons the rest of the current block and looks for a handler there. If there isn't one, it leaves that block too. If the block is inside a subprogram, the exception travels back to whoever called it, and so on outwards. This is called *propagation*. If it travels all the way out of the main program, the program stops with the `raised ...` message you've seen in earlier lessons.
+
+propagate.adb
+
+```
+with Ada.Text_IO;    use Ada.Text_IO;
+with Ada.Exceptions; use Ada.Exceptions;
+
+procedure Propagate is
+
+   Out_Of_Stock : exception;
+
+   procedure Take (Wanted, In_Stock : Natural) is
+   begin
+      Put_Line ("Taking" & Wanted'Image & "...");
+      if Wanted > In_Stock then
+         raise Out_Of_Stock with "only" & In_Stock'Image & " left";
+      end if;
+      Put_Line ("Done.");
+   end Take;
+
+begin
+   Take (Wanted => 5, In_Stock => 12);
+   Take (Wanted => 20, In_Stock => 12);
+   Put_Line ("This line is skipped.");
+exception
+   when E : Out_Of_Stock =>
+      Put_Line ("Main program caught it: " & Exception_Message (E));
+end Propagate;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata propagate.adb
+$ ./propagate
+Taking 5...
+Done.
+Taking 20...
+Main program caught it: only 12 left
+```
+
+The second call raised `Out_Of_Stock` inside `Take`. `Take` has no handler, so its last line never ran and the exception travelled back to the main program. The main program skipped its next line too, and its handler caught the exception.
 
 #### Remember
 
@@ -4652,7 +5581,492 @@ x
 Average of 3 numbers: 21.67
 ```
 
-# 14
+14
+
+## Contracts: promises Ada checks
+
+A contract writes down what a subprogram needs and what it promises, and Ada checks both halves every time it runs.
+
+### The idea
+
+Say you hire someone to fill your truck's fuel tank. The deal has two halves. You promise to ask for an amount that fits. They promise that afterwards the tank holds what it held before, plus what you asked for. In Ada, a deal like that is a *contract*, written on the subprogram's first lines, where every caller can see it:
+
+| Part | Who must make it true | When it fails, the bug is in |
+| --- | --- | --- |
+| `Pre` (precondition) | The caller, before the call | The code that made the call |
+| `Post` (postcondition) | The subprogram, by the time it returns | The subprogram itself |
+
+That last column is the whole point. When a contract fails, Ada tells you which side broke the deal, and on which line. Each part is just a condition, an expression that's True or False (lesson 5), written after `with`.
+
+### Preconditions: the caller's promise
+
+Here's the fuel-tank deal as a procedure. The second call asks for 30 gallons when only 16 more will fit:
+
+tank_pre.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Tank_Pre is
+
+   Capacity : constant := 26;
+
+   procedure Fill (Tank : in out Natural; Gallons : Positive)
+     with Pre  => Tank + Gallons <= Capacity,
+          Post => Tank = Tank'Old + Gallons;
+
+   procedure Fill (Tank : in out Natural; Gallons : Positive) is
+   begin
+      Tank := Tank + Gallons;
+   end Fill;
+
+   Diesel : Natural := 0;
+begin
+   Fill (Diesel, 10);
+   Put_Line ("Tank:" & Diesel'Image & " gallons");
+   Fill (Diesel, 30);
+   Put_Line ("Tank:" & Diesel'Image & " gallons");
+end Tank_Pre;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata tank_pre.adb
+$ ./tank_pre
+Tank: 10 gallons
+
+raised ADA.ASSERTIONS.ASSERTION_ERROR : failed precondition from tank_pre.adb:8
+```
+
+- `Pre => Tank + Gallons <= Capacity` means "only call me when the fuel fits".
+- The second call broke that promise, so Ada stopped the program *before* `Fill` ran. The tank was never overfilled.
+- `ASSERTION_ERROR` is the exception every failed contract raises (lesson 13). `failed precondition` says whose promise broke, and `tank_pre.adb:8` is the line where the precondition is written.
+- The fix belongs in the caller: don't ask for more than fits. `Fill` is fine as it is.
+
+### Postconditions: the subprogram's promise
+
+A precondition protects the subprogram from bad calls. A postcondition protects everyone else from a buggy subprogram. This `Fill` has the same contract, but its body has a bug:
+
+tank_post.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Tank_Post is
+
+   Capacity : constant := 26;
+
+   procedure Fill (Tank : in out Natural; Gallons : Positive)
+     with Pre  => Tank + Gallons <= Capacity,
+          Post => Tank = Tank'Old + Gallons;
+
+   procedure Fill (Tank : in out Natural; Gallons : Positive) is
+   begin
+      Tank := Tank + Gallons - 1;   --  the bug: one gallon short
+   end Fill;
+
+   Diesel : Natural := 0;
+begin
+   Put_Line ("Tank:" & Diesel'Image & " gallons");
+   Fill (Diesel, 10);
+   Put_Line ("Tank:" & Diesel'Image & " gallons");
+end Tank_Post;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata tank_post.adb
+$ ./tank_post
+Tank: 0 gallons
+
+raised ADA.ASSERTIONS.ASSERTION_ERROR : failed postcondition from tank_post.adb:9
+```
+
+- `Tank'Old` means "`Tank` as it was when the call started". A postcondition runs at the end, when `Tank` already holds the new value, so `'Old` is how it compares before with after. You can put `'Old` on any value in a postcondition; it's most often used on `in out` parameters like this one.
+- In a function's postcondition, `'Result` plays the matching part: the value about to be returned, as in lesson 9's `Percent_Of'Result`.
+- The call was fine, so the message says `failed postcondition`: the bug is inside `Fill`. Without the contract, the tank would quietly be a gallon short, and nobody would notice until the truck ran dry.
+
+### Without -gnata, nothing is checked
+
+GNAT skips contract checks unless you ask for them with `-gnata`. This is exactly the program from the precondition section, built without it:
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 tank_pre.adb
+$ ./tank_pre
+Tank: 10 gallons
+Tank: 40 gallons
+```
+
+The contract is still written in the code, but nothing checks it, so the program happily reports 40 gallons in a 26-gallon tank. That's why every command in this course includes `-gnata`. Real projects keep the checks on while developing and testing. Some switch them off in the finished program for speed, but only once testing, or a proof tool (see the end of this lesson), has shown they can't fail.
+
+### Contracts are for bugs, not for bad input
+
+This is the part people find hardest, so it's worth being precise. A failed contract means the *program* is wrong: someone wrote a call or a body that breaks the deal. A user typing 30 when only 16 gallons fit isn't a bug. It's ordinary life, and the program should expect it. So check input with `if` and tell the user, and only call `Fill` once you know the call keeps its promise:
+
+tank_input.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Tank_Input is
+
+   Capacity : constant := 26;
+
+   procedure Fill (Tank : in out Natural; Gallons : Positive)
+     with Pre  => Tank + Gallons <= Capacity,
+          Post => Tank = Tank'Old + Gallons;
+
+   procedure Fill (Tank : in out Natural; Gallons : Positive) is
+   begin
+      Tank := Tank + Gallons;
+   end Fill;
+
+   Diesel : Natural := 10;
+   Wanted : Integer;
+begin
+   Put ("Gallons to add: ");
+   Wanted := Integer'Value (Get_Line);
+   if Wanted < 1 then
+      Put_Line ("Add at least 1 gallon.");
+   elsif Diesel + Wanted > Capacity then
+      Put_Line ("That won't fit: there's room for"
+                & Integer'Image (Capacity - Diesel) & " gallons.");
+   else
+      Fill (Diesel, Wanted);
+      Put_Line ("Tank:" & Diesel'Image & " gallons");
+   end if;
+end Tank_Input;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata tank_input.adb
+$ ./tank_input
+Gallons to add: 12
+Tank: 22 gallons
+$ ./tank_input
+Gallons to add: 30
+That won't fit: there's room for 16 gallons.
+```
+
+The precondition never fails here, because the `if` makes sure of it. A good rule of thumb: `if`, `case` and exception handlers deal with things that can legitimately go wrong. Contracts state things that must never go wrong. If a contract fails, fix the code; don't catch `Assertion_Error` and carry on.
+
+### Contracts on types: predicates
+
+A range (lesson 7) can say "0 to 100", but it can't say "even" or "a vowel". A *predicate* is a rule attached to a subtype, checked whenever a value goes into it:
+
+predicates.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Predicates is
+
+   subtype Vowel is Character
+     with Static_Predicate => Vowel in 'a' | 'e' | 'i' | 'o' | 'u';
+
+   subtype Even is Integer
+     with Dynamic_Predicate => Even mod 2 = 0;
+
+   Pairs : Even := 4;
+begin
+   Put ("Vowels:");
+   for V in Vowel loop
+      Put (" " & V);
+   end loop;
+   New_Line;
+   Put_Line ("Is 'y' a vowel? " & Boolean'Image ('y' in Vowel));
+
+   Put_Line ("Pairs:" & Pairs'Image);
+   Pairs := Pairs + 3;
+   Put_Line ("Pairs:" & Pairs'Image);
+end Predicates;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata predicates.adb
+$ ./predicates
+Vowels: a e i o u
+Is 'y' a vowel? FALSE
+Pairs: 4
+
+raised ADA.ASSERTIONS.ASSERTION_ERROR : Dynamic_Predicate failed at predicates.adb:21
+```
+
+- `Static_Predicate` is for rules made of fixed values, ranges and lists, like the five vowels. Because Ada can work out the values in advance, you can loop over the subtype (`for V in Vowel loop`) and test membership with `in`.
+- `Dynamic_Predicate` takes any condition, like `Even mod 2 = 0`. It's checked every time a value is stored, which is how `Pairs := Pairs + 3` was caught on line 21. You can't loop over a dynamic predicate, because Ada can't list its values in advance.
+- Inside the rule, the subtype's own name stands for the value being checked: `Even mod 2 = 0` means "this value mod 2 is 0".
+
+### A contract from the real world
+
+You've already met one. In lesson 1 you looked inside `a-textio.ads` at the two `Put_Line`s. Here is the whole declaration of the one that writes to a file:
+
+Terminal
+
+```
+$ sed -n '555,564p' /usr/lib/gcc/x86_64-linux-gnu/13/adainclude/a-textio.ads
+   procedure Put_Line
+     (File : File_Type;
+      Item : String)
+   with
+     Pre      => Is_Open (File) and then Mode (File) /= In_File,
+     Post     =>
+       Line_Length (File)'Old = Line_Length (File)
+       and Page_Length (File)'Old = Page_Length (File),
+     Global   => (In_Out => File_System),
+     Annotate => (GNATprove, Always_Return);
+```
+
+- `Pre`: you may only call it on a file that is open and isn't open for reading only (`/= In_File`). `and then` matters here: asking a closed file for its mode would itself be an error, so the second check only runs once the first has passed.
+- `Post`: writing a line doesn't change the file's line or page length settings. That's `'Old` again, on function calls this time.
+- `Global` and `Annotate` are for a proof tool. Ignore them for now.
+
+Those contracts are written for SPARK, a strict subset of Ada with a tool, GNATprove, that can prove a contract holds for every possible input without running the program at all. That's part of why Ada and SPARK are used in places where software must not fail, such as aircraft and railways. You don't need SPARK for this course, but the contracts you learn to write here are the same ones it checks.
+
+#### Remember
+
+- `Pre`: the caller's promise. `Post`: the subprogram's promise
+- `X'Old`: X at the start of the call. `F'Result`: the function's answer
+- Checked only when compiled with `-gnata`
+- Contracts catch bugs; `if` handles bad input
+- Predicates put rules on subtypes
+
+#### Common mistakes
+
+- Compiling without `-gnata` and assuming contracts are checked
+- Using a precondition to reject user input
+- Catching `Assertion_Error` instead of fixing the code
+- A postcondition so weak that wrong answers still pass it
+
+### Exercises
+
+Exercise 14.1
+
+#### Bank withdrawal
+
+Write `Withdraw (Balance : in out Natural; Amount : Positive)` with a precondition that there's enough money and a postcondition that the balance went down by exactly the amount. Start with 100, withdraw 40, then try to withdraw 80.
+
+Target output
+
+```
+$ ./withdraw_demo
+Balance: 60
+
+raised ADA.ASSERTIONS.ASSERTION_ERROR : failed precondition from withdraw_demo.adb:6
+```
+
+Hint
+
+The precondition is `Amount <= Balance`. The postcondition compares `Balance` with `Balance'Old`.
+
+Solution
+
+withdraw_demo.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Withdraw_Demo is
+
+   procedure Withdraw (Balance : in out Natural; Amount : Positive)
+     with Pre  => Amount <= Balance,
+          Post => Balance = Balance'Old - Amount;
+
+   procedure Withdraw (Balance : in out Natural; Amount : Positive) is
+   begin
+      Balance := Balance - Amount;
+   end Withdraw;
+
+   Account : Natural := 100;
+begin
+   Withdraw (Account, 40);
+   Put_Line ("Balance:" & Account'Image);
+   Withdraw (Account, 80);
+   Put_Line ("Balance:" & Account'Image);
+end Withdraw_Demo;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata withdraw_demo.adb
+$ ./withdraw_demo
+Balance: 60
+
+raised ADA.ASSERTIONS.ASSERTION_ERROR : failed precondition from withdraw_demo.adb:6
+```
+
+Without the precondition, `Natural`'s range check would still stop the program, but the message would point at the subtraction inside `Withdraw`. The precondition points at the real mistake: the call that asked for more than there was.
+
+Exercise 14.2
+
+#### Find the bug
+
+This function's postcondition fails. The contract is correct; the body isn't. Read GNAT's message, work out which case the body gets wrong, and fix the body without touching the contract.
+
+Target output
+
+```
+$ ./largest_demo
+Largest of 3, 9, 4:  9
+Largest of 8, 2, 15: 15
+```
+
+largest_demo.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Largest_Demo is
+
+   function Largest (A, B, C : Integer) return Integer
+     with Post => Largest'Result >= A and then Largest'Result >= B
+                  and then Largest'Result >= C
+                  and then (Largest'Result = A or else Largest'Result = B
+                            or else Largest'Result = C);
+
+   function Largest (A, B, C : Integer) return Integer is
+   begin
+      if A > B then
+         return A;
+      elsif B > C then
+         return B;
+      else
+         return C;
+      end if;
+   end Largest;
+
+begin
+   Put_Line ("Largest of 3, 9, 4: " & Largest (3, 9, 4)'Image);
+   Put_Line ("Largest of 8, 2, 15:" & Largest (8, 2, 15)'Image);
+end Largest_Demo;
+```
+
+Hint
+
+Try the failing call by hand: with 8, 2 and 15, which branch runs? The first branch only compares A with B.
+
+Solution
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata largest_demo.adb
+$ ./largest_demo
+Largest of 3, 9, 4:  9
+
+raised ADA.ASSERTIONS.ASSERTION_ERROR : failed postcondition from largest_demo.adb:7
+```
+
+`A > B` was true for 8 and 2, so the function returned 8 without ever looking at C. The postcondition says the answer must be at least as big as all three, and 8 isn't. Compare A with both others first:
+
+largest_demo.adb
+
+```
+with Ada.Text_IO; use Ada.Text_IO;
+
+procedure Largest_Demo is
+
+   function Largest (A, B, C : Integer) return Integer
+     with Post => Largest'Result >= A and then Largest'Result >= B
+                  and then Largest'Result >= C
+                  and then (Largest'Result = A or else Largest'Result = B
+                            or else Largest'Result = C);
+
+   function Largest (A, B, C : Integer) return Integer is
+   begin
+      if A >= B and then A >= C then
+         return A;
+      elsif B >= C then
+         return B;
+      else
+         return C;
+      end if;
+   end Largest;
+
+begin
+   Put_Line ("Largest of 3, 9, 4: " & Largest (3, 9, 4)'Image);
+   Put_Line ("Largest of 8, 2, 15:" & Largest (8, 2, 15)'Image);
+end Largest_Demo;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata largest_demo.adb
+$ ./largest_demo
+Largest of 3, 9, 4:  9
+Largest of 8, 2, 15: 15
+```
+
+Notice the contract's last part: the answer must also *be* one of A, B or C. Without it, returning `Integer'Last` would pass every time. A contract is only as good as what it rules out.
+
+Exercise 14.3
+
+#### Vowels by predicate
+
+Redo exercise 10.2 using a `Vowel` subtype with a static predicate, and test each character with `in Vowel` instead of a `case`.
+
+Target output, with typed input underlined
+
+```
+$ ./vowel_count
+Type a sentence: The Analytical Engine weaves algebraical patterns
+Vowels: 18
+```
+
+Hint
+
+Lower-case each character with `To_Lower` before the `in` test.
+
+Solution
+
+vowel_count.adb
+
+```
+with Ada.Text_IO;             use Ada.Text_IO;
+with Ada.Characters.Handling; use Ada.Characters.Handling;
+
+procedure Vowel_Count is
+
+   subtype Vowel is Character
+     with Static_Predicate => Vowel in 'a' | 'e' | 'i' | 'o' | 'u';
+
+   Count : Natural := 0;
+begin
+   Put ("Type a sentence: ");
+   declare
+      Line : constant String := Get_Line;
+   begin
+      for C of Line loop
+         if To_Lower (C) in Vowel then
+            Count := @ + 1;
+         end if;
+      end loop;
+   end;
+   Put_Line ("Vowels:" & Count'Image);
+end Vowel_Count;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata vowel_count.adb
+$ ./vowel_count
+Type a sentence: The Analytical Engine weaves algebraical patterns
+Vowels: 18
+```
+
+Same sentence, same answer as exercise 10.2: 18. The rule for what counts as a vowel now lives in one place, on the type, where any part of the program can use it.
+
+15
 
 ## Project: a gradebook
 
@@ -4668,7 +6082,7 @@ Build a gradebook that reads lines like `Grace 97`, rejects bad lines with a rea
 - Print the report, lining up columns with `Head` and `Put (X, Width => 7)`.
 - Catch bad lines with your own `Bad_Line` exception.
 
-Try it yourself before opening the solution in exercise 14.1. The two extra exercises push further.
+Try it yourself before opening the solution in exercise 15.1. The two extra exercises push further.
 
 #### Remember
 
@@ -4681,7 +6095,7 @@ Try it yourself before opening the solution in exercise 14.1. The two extra exer
 
 ### Exercises
 
-Exercise 14.1
+Exercise 15.1
 
 #### The gradebook
 
@@ -4847,7 +6261,7 @@ Class average: 82.8
 Top student:   Grace
 ```
 
-Exercise 14.2
+Exercise 15.2
 
 #### Guessing game
 
@@ -4863,14 +6277,14 @@ Lower.
 Your guess: 25
 Lower.
 Your guess: 12
-Higher.
-Your guess: 18
 Lower.
-Your guess: 15
+Your guess: 6
 Lower.
-Your guess: 13
+Your guess: 3
+Lower.
+Your guess: 1
 Higher.
-Your guess: 14
+Your guess: 2
 Got it in 7 tries!
 ```
 
@@ -4932,20 +6346,20 @@ Lower.
 Your guess: 25
 Lower.
 Your guess: 12
-Higher.
-Your guess: 18
 Lower.
-Your guess: 15
+Your guess: 6
 Lower.
-Your guess: 13
+Your guess: 3
+Lower.
+Your guess: 1
 Higher.
-Your guess: 14
+Your guess: 2
 Got it in 7 tries!
 ```
 
 The run above was played by a script that halves the range each time. Halving always finds a number from 1 to 100 in seven guesses or fewer, since 2⁷ = 128.
 
-Exercise 14.3
+Exercise 15.3
 
 #### Stretch goals
 
@@ -4958,6 +6372,288 @@ For sorting, insertion sort is short: take each student and slide it left past e
 Notes
 
 No single answer here: if it compiles, the output is right, and you can explain every line, you're done. Good next steps after this course are [learn.adacore.com](https://learn.adacore.com/)'s Introduction to Ada and the [Ada 2022 Reference Manual](http://www.ada-auth.org/standards/22rm/html/RM-TOC.html), which is free to read.
+
+A–Z
+
+## Glossary
+
+Every term this course uses, in plain words, with a link to the lesson that explains it properly.
+
+aggregate
+
+A whole array or record value written out at once, like `[72, 95, 88]`. [Lesson 8](#arrays)
+
+argument
+
+The actual value you give a subprogram when you call it: the 7 in `Square (7)`. [Lesson 9](#subprograms)
+
+array
+
+A row of values of one type, each picked out by its index. [Lesson 8](#arrays)
+
+Assertion_Error
+
+The exception raised when a contract or predicate fails. [Lesson 14](#contracts)
+
+attribute
+
+A built-in fact about a type or value, written after an apostrophe: `X'Image`, `Integer'Last`. [Lesson 2](#variables)
+
+body
+
+How a package or subprogram works: its statements. A package body is its `.adb` file. [Lesson 12](#packages)
+
+Boolean
+
+The type with only two values, `True` and `False`. [Lesson 2](#variables)
+
+branch
+
+The statements under one condition of an `if` or one choice of a `case`. [Lesson 5](#decisions)
+
+call
+
+Running a subprogram by writing its name, with any arguments in brackets. [Lesson 9](#subprograms)
+
+case
+
+A statement that picks a branch by comparing one value against lists of choices. [Lesson 5](#decisions)
+
+Character
+
+The type of a single letter, digit, space or symbol, written in single quotes: `'J'`. [Lesson 2](#variables)
+
+client
+
+Code that uses a package. Clients only see the package's specification. [Lesson 12](#packages)
+
+compiler
+
+The program (GNAT) that checks your source code and turns it into an executable. [Setup](#setup)
+
+component
+
+Ada's word for a field of a record. [Lesson 11](#records)
+
+condition
+
+An expression that works out to True or False, like `Score >= 90`. [Lesson 5](#decisions)
+
+constant
+
+A named value that is set once and can never change. [Lesson 2](#variables)
+
+contract
+
+A `Pre` or `Post` rule on a subprogram, checked on every call when compiled with `-gnata`. [Lesson 14](#contracts)
+
+declaration
+
+A line that creates a name and says what it is, such as `Age : Integer := 34;`. [Lesson 2](#variables)
+
+declare block
+
+A `declare ... begin ... end;` section that creates names in the middle of a program. [Lesson 4](#input)
+
+discrete type
+
+A type whose values can be counted one by one: integer types and enumerations, not Float. [Lesson 8](#arrays)
+
+element
+
+One value inside an array. [Lesson 8](#arrays)
+
+enumeration
+
+A type whose values are names you list yourself, like `(Mon, Tue, Wed)`. [Lesson 7](#types)
+
+exception
+
+Ada's signal that something went wrong while the program was running, like `Constraint_Error`. [Lesson 13](#exceptions)
+
+executable
+
+The program file the compiler produces, which you run with `./name`. [Setup](#setup)
+
+expression
+
+Anything that works out to a value: `2 + 3`, `Age`, `Square (7)`. [Lesson 3](#arithmetic)
+
+field
+
+One named value inside a record, reached with a dot: `Bolt.Qty`. [Lesson 11](#records)
+
+Float
+
+The type for numbers with a fractional part, like `1.82`. [Lesson 2](#variables)
+
+function
+
+A subprogram that calculates and returns a value. [Lesson 9](#subprograms)
+
+handler
+
+Code in an `exception` section that catches an exception and decides what to do. [Lesson 13](#exceptions)
+
+identifier
+
+A name you make up for a variable, constant, procedure or type. [Lesson 2](#variables)
+
+if expression
+
+An `if` that produces a value instead of running statements: `(if A then B else C)`. [Lesson 5](#decisions)
+
+index
+
+The position of an element in an array: `Scores (2)`. [Lesson 8](#arrays)
+
+Integer
+
+The type for whole numbers; about ±2.1 billion on GNAT. [Lesson 2](#variables)
+
+iteration
+
+One trip through the statements of a loop. [Lesson 6](#loops)
+
+keyword
+
+A word with a fixed meaning in Ada, like `begin` or `if`, that can't be used as a name. [Lesson 1](#hello)
+
+literal
+
+A value typed straight into the program: `42`, `1.82`, `'J'`, `"Hi"`. [Lesson 1](#hello)
+
+local variable
+
+A variable declared inside a subprogram, made fresh on each call. [Lesson 9](#subprograms)
+
+mod
+
+A remainder that wraps around like a clock; always between 0 and B − 1 for a positive B. [Lesson 3](#arithmetic)
+
+'Old
+
+In a postcondition, `X'Old` is the value X had when the call started. [Lesson 14](#contracts)
+
+operand
+
+A value an operator works on: in `A + B`, A and B. [Lesson 3](#arithmetic)
+
+operator
+
+A symbol that does a calculation or comparison: `+`, `/`, `<`, `and`. [Lesson 3](#arithmetic)
+
+overloading
+
+Several subprograms sharing a name, with Ada picking one by the arguments you pass. [Lesson 1](#hello)
+
+package
+
+A named collection of types, constants and subprograms, split into a spec and a body. [Lesson 12](#packages)
+
+parameter
+
+A name in a subprogram's first line standing for a value it will be given. [Lesson 9](#subprograms)
+
+postcondition
+
+`Post`: what a subprogram promises is true when it returns. [Lesson 14](#contracts)
+
+precondition
+
+`Pre`: what must be true when a subprogram is called. The caller's promise. [Lesson 14](#contracts)
+
+predicate
+
+A rule attached to a subtype, like "even" or "a vowel", checked when a value goes into it. [Lesson 14](#contracts)
+
+private type
+
+A type whose inside is hidden from clients, who can only use the operations its package offers. [Lesson 12](#packages)
+
+procedure
+
+A named list of statements. Every program starts in a main procedure. [Lesson 1](#hello)
+
+propagation
+
+An exception travelling outwards through blocks and calls until a handler catches it. [Lesson 13](#exceptions)
+
+raise
+
+To signal an exception, either automatically when a rule breaks or with the `raise` statement. [Lesson 13](#exceptions)
+
+range
+
+`A .. B`: every value from A to B, both included. Empty when A is bigger than B. [Lesson 6](#loops)
+
+record
+
+A type that bundles values of different types together as named fields. [Lesson 11](#records)
+
+rem
+
+The remainder left over from whole-number `/`; it takes the sign of the left number. [Lesson 3](#arithmetic)
+
+'Result
+
+In a function's postcondition, the value the function is about to return. [Lesson 14](#contracts)
+
+scope
+
+The part of a program where a name can be used. [Lesson 4](#input)
+
+slice
+
+A piece of an array or String, like `Word (1 .. 4)`. [Lesson 10](#strings)
+
+specification
+
+What a package or subprogram offers: for a package, its `.ads` file; for a subprogram, its first line. [Lesson 12](#packages)
+
+statement
+
+One instruction for the computer to carry out, ending in a semicolon. [Lesson 1](#hello)
+
+String
+
+The type for text: a row of Characters with a fixed length. [Lesson 2](#variables)
+
+string literal
+
+Text in double quotes typed straight into the program. [Lesson 1](#hello)
+
+strongly typed
+
+Every value has exactly one type, and Ada never converts between types unless you ask. [Lesson 2](#variables)
+
+subprogram
+
+A procedure or a function. [Lesson 9](#subprograms)
+
+subtype
+
+An existing type with an extra rule, usually a narrower range. It still mixes with its type. [Lesson 7](#types)
+
+type
+
+A kind of value: which values are allowed and what you can do with them. [Lesson 2](#variables)
+
+Unbounded_String
+
+A string type that can grow and shrink, unlike a plain String. [Lesson 10](#strings)
+
+use clause
+
+`use Ada.Text_IO;`: lets you write a package's names without the package in front. [Lesson 1](#hello)
+
+variable
+
+A named box that holds one value of one type, which can change. [Lesson 2](#variables)
+
+with clause
+
+`with Ada.Text_IO;`: gives your program access to a package. [Lesson 1](#hello)
 
 Programs tested with GNAT 13.3 on Ubuntu 24.04, built with `gnatmake -q -gnat2022 -gnata`. The Windows and Mac install steps follow MSYS2's, Alire's and GetAda's own instructions. Each program's output above was captured from a real terminal session; typed input is underlined.
 
