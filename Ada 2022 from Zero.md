@@ -4,7 +4,7 @@ An entry-level programming course in 15 lessons and 47 exercises, written for Ad
 
 **0 of 47 done**
 
-[Start here: Setup](#setup)
+[Start here: Setup](#Get_a_compiler_running)
 [Lesson 1 Hello, world](#hello)
 [Lesson 2 Types and variables](#variables)
 [Lesson 3 Arithmetic](#arithmetic)
