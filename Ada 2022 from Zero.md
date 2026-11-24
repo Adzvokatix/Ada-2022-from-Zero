@@ -6,33 +6,33 @@ An entry-level programming course in 15 lessons and 47 exercises, written for Ad
 
 [Start here: Setup](#0)
 
-[Lesson 1 Hello, world](#hello)
+[Lesson 1 Hello, world](#1)
 
-[Lesson 2 Types and variables](#variables)
+[Lesson 2 Types and variables](#2)
 
-[Lesson 3 Arithmetic](#arithmetic)
+[Lesson 3 Arithmetic](#3)
 
-[Lesson 4 Input](#input)
+[Lesson 4 Input](#4)
 
-[Lesson 5 Decisions](#decisions)
+[Lesson 5 Decisions](#5)
 
-[Lesson 6 Loops](#loops)
+[Lesson 6 Loops](#6)
 
-[Lesson 7 Your own types](#types)
+[Lesson 7 Your own types](#7)
 
-[Lesson 8 Arrays](#arrays)
+[Lesson 8 Arrays](#8)
 
-[Lesson 9 Subprograms](#subprograms)
+[Lesson 9 Subprograms](#9)
 
-[Lesson 10 Strings](#strings)
+[Lesson 10 Strings](#10)
 
-[Lesson 11 Records](#records)
+[Lesson 11 Records](#11)
 
-[Lesson 12 Packages](#packages)
+[Lesson 12 Packages](#12)
 
-[Lesson 13 Errors](#exceptions)
+[Lesson 13 Errors](#13)
 
-[Lesson 14 Project](#project)
+[Lesson 14 Project](#14)
 
 # 0
 
@@ -335,7 +335,7 @@ If it doesn't work
 
 Find the exact message you're seeing in the table above. If it isn't there, run these three and compare: `pwd` should end in `ada-course`, `ls` should list `hello.adb`, and `head -1 hello.adb` should print `with Ada.Text_IO; use Ada.Text_IO;`. The first one that doesn't match is the step to redo.
 
-1
+# 1
 
 ## Hello, world
 
@@ -889,7 +889,7 @@ That blank line came from New_Line.
 
 Every `Put`, `Put_Line` and `New_Line` gets `Ada.Text_IO.` in front. That's why most programs add the `use` line.
 
-2
+# 2
 
 ## Types and variables
 
@@ -1345,7 +1345,7 @@ Solution
 
 If you picked differently and can say why, that's often fine. Choosing a type is a decision about what the value means, and that's the habit Ada wants you to build.
 
-3
+# 3
 
 ## Arithmetic
 
@@ -1851,7 +1851,7 @@ $ ./predict_math
 
 5 fits into 17 three times with 2 left over. −17 / 5 chops toward zero to −3, and its `rem` keeps the minus sign: −2. `mod` must land between 0 and 4, and −17 = −4 × 5 + 3, so it's 3. 17.0 / 2.0 is 8.5, and converting a half rounds away from zero, to 9.
 
-4
+# 4
 
 ## Reading what the user types
 
@@ -2314,7 +2314,7 @@ Quantity: 40
 Ordered 40 x bolts
 ```
 
-5
+# 5
 
 ## Making decisions
 
@@ -2581,7 +2581,7 @@ Year: 2028
  2028 is a leap year
 ```
 
-6
+# 6
 
 ## Loops
 
@@ -2873,7 +2873,7 @@ $ ./hailstone
 Highest value along the way: 9232
 ```
 
-7
+# 7
 
 ## Making your own types
 
@@ -3126,7 +3126,7 @@ Yellow: slow down
 
 The compiler checks that the `case` covers all three colors. Add a fourth color to the type and it will point at this `case` until you handle it.
 
-8
+# 8
 
 ## Arrays
 
@@ -3398,7 +3398,7 @@ Busiest day: THU
 Overtime:     9 h
 ```
 
-9
+# 9
 
 ## Procedures and functions
 
@@ -3703,7 +3703,7 @@ Low: 4   High: 31
 Mean: 16.17
 ```
 
-10
+# 10
 
 ## Working with text
 
@@ -3983,7 +3983,7 @@ Decoded: Meet at the Engine, noon.
 
 Decoding shifts by −3. `mod` keeps a negative result inside 0 to 25 because it takes the sign of 26. `rem` would go negative and break.
 
-11
+# 11
 
 ## Records
 
@@ -4245,7 +4245,7 @@ Trip:  7, 2
 Start is unchanged: 2, 3
 ```
 
-12
+# 12
 
 ## Packages: splitting a program into files
 
@@ -4432,7 +4432,7 @@ GCD of 84 and 36: 12
 Digit sum of 2026: 10
 ```
 
-13
+# 13
 
 ## When things go wrong
 
@@ -4652,7 +4652,7 @@ x
 Average of 3 numbers: 21.67
 ```
 
-14
+# 14
 
 ## Project: a gradebook
 
