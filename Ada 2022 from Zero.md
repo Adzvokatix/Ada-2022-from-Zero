@@ -5,19 +5,33 @@ An entry-level programming course in 15 lessons and 47 exercises, written for Ad
 **0 of 47 done**
 
 [Start here: Setup](#Get_a_compiler_running)
+
 [Lesson 1 Hello, world](#hello)
+
 [Lesson 2 Types and variables](#variables)
+
 [Lesson 3 Arithmetic](#arithmetic)
+
 [Lesson 4 Input](#input)
+
 [Lesson 5 Decisions](#decisions)
+
 [Lesson 6 Loops](#loops)
+
 [Lesson 7 Your own types](#types)
+
 [Lesson 8 Arrays](#arrays)
+
 [Lesson 9 Subprograms](#subprograms)
+
 [Lesson 10 Strings](#strings)
+
 [Lesson 11 Records](#records)
+
 [Lesson 12 Packages](#packages)
+
 [Lesson 13 Errors](#exceptions)
+
 [Lesson 14 Project](#project)
 
 0
