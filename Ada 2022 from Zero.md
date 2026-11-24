@@ -4,11 +4,41 @@ An entry-level programming course in 16 lessons and 53 exercises, written for Ad
 
 **0 of 53 done**
 
-[Start here0Setup](#setup)[Lesson 1Hello, world](#hello)[Lesson 2Types and variables](#variables)[Lesson 3Arithmetic](#arithmetic)[Lesson 4Input](#input)[Lesson 5Decisions](#decisions)[Lesson 6Loops](#loops)[Lesson 7Your own types](#types)[Lesson 8Arrays](#arrays)[Lesson 9Subprograms](#subprograms)[Lesson 10Strings](#strings)[Lesson 11Records](#records)[Lesson 12Packages](#packages)[Lesson 13Errors](#exceptions)[Lesson 14Contracts](#contracts)[Lesson 15Project](#project)
+[Start here0Setup](#0)
 
-[Setup](#setup)[1 Hello, world](#hello)[2 Types and variables](#variables)[3 Arithmetic](#arithmetic)[4 Input](#input)[5 Decisions](#decisions)[6 Loops](#loops)[7 Your own types](#types)[8 Arrays](#arrays)[9 Subprograms](#subprograms)[10 Strings](#strings)[11 Records](#records)[12 Packages](#packages)[13 Errors](#exceptions)[14 Contracts](#contracts)[15 Project](#project)[Glossary](#glossary)
+[Lesson 1Hello, world](#1)
 
-0
+[Lesson 2Types and variables](#2)
+
+[Lesson 3Arithmetic](#3)
+
+[Lesson 4Input](#4)
+
+[Lesson 5Decisions](#5)
+
+[Lesson 6Loops](#6)
+
+[Lesson 7Your own types](#7)
+
+[Lesson 8Arrays](#8)
+
+[Lesson 9Subprograms](#9)
+
+[Lesson 10Strings](#10)
+
+[Lesson 11Records](#11)
+
+[Lesson 12Packages](#12)
+
+[Lesson 13Errors](#13)
+
+[Lesson 14Contracts](#14)
+
+[Lesson 15Project](#15)
+
+[Glossary](#glossary)
+
+# 0
 
 ## Get a compiler running
 
@@ -309,7 +339,7 @@ If it doesn't work
 
 Find the exact message you're seeing in the table above. If it isn't there, run these three and compare: `pwd` should end in `ada-course`, `ls` should list `hello.adb`, and `head -1 hello.adb` should print `with Ada.Text_IO; use Ada.Text_IO;`. The first one that doesn't match is the step to redo.
 
-1
+# 1
 
 ## Hello, world
 
@@ -865,7 +895,7 @@ That blank line came from New_Line.
 
 Every `Put`, `Put_Line` and `New_Line` gets `Ada.Text_IO.` in front. That's why most programs add the `use` line.
 
-2
+# 2
 
 ## Types and variables
 
@@ -1360,7 +1390,7 @@ Solution
 
 If you picked differently and can say why, that's often fine. Choosing a type is a decision about what the value means, and that's the habit Ada wants you to build.
 
-3
+# 3
 
 ## Arithmetic
 
@@ -1906,7 +1936,7 @@ $ ./predict_math
 
 5 fits into 17 three times with 2 left over. −17 / 5 chops toward zero to −3, and its `rem` keeps the minus sign: −2. `mod` must land between 0 and 4, and −17 = −4 × 5 + 3, so it's 3. 17.0 / 2.0 is 8.5, and converting a half rounds away from zero, to 9.
 
-4
+# 4
 
 ## Reading what the user types
 
@@ -2369,7 +2399,7 @@ Quantity: 40
 Ordered 40 x bolts
 ```
 
-5
+# 5
 
 ## Making decisions
 
@@ -2717,7 +2747,7 @@ Year: 2028
  2028 is a leap year
 ```
 
-6
+# 6
 
 ## Loops
 
@@ -3045,7 +3075,7 @@ $ ./hailstone
 Highest value along the way: 9232
 ```
 
-7
+# 7
 
 ## Making your own types
 
@@ -3338,7 +3368,7 @@ Yellow: slow down
 
 The compiler checks that the `case` covers all three colors. Add a fourth color to the type and it will point at this `case` until you handle it.
 
-8
+# 8
 
 ## Arrays
 
@@ -3641,7 +3671,7 @@ Busiest day: THU
 Overtime:     9 h
 ```
 
-9
+# 9
 
 ## Procedures and functions
 
@@ -3985,7 +4015,7 @@ Low: 4   High: 31
 Mean: 16.17
 ```
 
-10
+# 10
 
 ## Working with text
 
@@ -4361,7 +4391,7 @@ The first sentence comes out right: e, y, y, i, a and y make 6. The second shows
 
 That's a lesson that goes well beyond vowels: a program does exactly what its rule says, so the hard part is often choosing the rule, and knowing where it stops being true.
 
-11
+# 11
 
 ## Records
 
@@ -4655,7 +4685,7 @@ Trip:  7, 2
 Start is unchanged: 2, 3
 ```
 
-12
+# 12
 
 ## Packages and specifications
 
@@ -5384,7 +5414,7 @@ $ ./main
 Balance: 2100 cents
 ```
 
-13
+# 13
 
 ## When things go wrong
 
@@ -5652,7 +5682,7 @@ x
 Average of 3 numbers: 21.67
 ```
 
-14
+# 14
 
 ## Contracts: promises Ada checks
 
@@ -6138,7 +6168,7 @@ Vowels: 18
 
 Same sentence, same answer as exercise 10.2: 18. The rule for what counts as a vowel now lives in one place, on the type, where any part of the program can use it.
 
-15
+# 15
 
 ## Project: a gradebook
 
