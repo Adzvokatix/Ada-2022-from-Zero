@@ -4,9 +4,36 @@ An entry-level programming course in 15 lessons and 47 exercises, written for Ad
 
 **0 of 47 done**
 
-[Start hereSetup](#setup)[Lesson 1Hello, world](#hello)[Lesson 2Types and variables](#variables)[Lesson 3Arithmetic](#arithmetic)[Lesson 4Input](#input)[Lesson 5Decisions](#decisions)[Lesson 6Loops](#loops)[Lesson 7Your own types](#types)[Lesson 8Arrays](#arrays)[Lesson 9Subprograms](#subprograms)[Lesson 10Strings](#strings)[Lesson 11Records](#records)[Lesson 12Packages](#packages)[Lesson 13Errors](#exceptions)[Lesson 14Project](#project)
+[Start hereSetup](#setup)
+[Lesson 1Hello, world](#hello)
+[Lesson 2Types and variables](#variables)
+[Lesson 3Arithmetic](#arithmetic)
+[Lesson 4Input](#input)
+[Lesson 5Decisions](#decisions)
+[Lesson 6Loops](#loops)
+[Lesson 7Your own types](#types)
+[Lesson 8Arrays](#arrays)
+[Lesson 9Subprograms](#subprograms)
+[Lesson 10Strings](#strings)
+[Lesson 11Records](#records)
+[Lesson 12Packages](#packages)
+[Lesson 13Errors](#exceptions)
+[Lesson 14Project](#project)
 
-[Setup](#setup)[1 Hello, world](#hello)[2 Types and variables](#variables)[3 Arithmetic](#arithmetic)[4 Input](#input)[5 Decisions](#decisions)[6 Loops](#loops)[7 Your own types](#types)[8 Arrays](#arrays)[9 Subprograms](#subprograms)[10 Strings](#strings)[11 Records](#records)[12 Packages](#packages)[13 Errors](#exceptions)[14 Project](#project)
+[Setup](#setup)
+[1 Hello, world](#hello)
+[2 Types and variables](#variables)
+[3 Arithmetic](#arithmetic)
+[4 Input](#input)[5 Decisions](#decisions)
+[6 Loops](#loops)
+[7 Your own types](#types)
+[8 Arrays](#arrays)
+[9 Subprograms](#subprograms)
+[10 Strings](#strings)
+[11 Records](#records)
+[12 Packages](#packages)
+[13 Errors](#exceptions)
+[14 Project](#project)
 
 0
 
