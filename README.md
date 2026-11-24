@@ -1,9 +1,6 @@
 Ada 2022 from Zero
 
-An entry-level programming course in 15 lessons and 40 exercises, 
-written for Ada 2022. All 59 programs on this page went through 
-GNAT 13.3, and every terminal shows exactly what the compiler and 
-the program printed.
+An entry-level programming course in 16 lessons and 53 exercises, written for Ada 2022. All 107 programs on this page went through GNAT 13.3, and every terminal shows exactly what the compiler and the program printed. 
 
 Tabs for Linux, Windows, and Mac.
 
