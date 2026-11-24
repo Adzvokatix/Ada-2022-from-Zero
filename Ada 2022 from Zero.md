@@ -1,8 +1,8 @@
 # Ada 2022 from Zero
 
-An entry-level programming course in 16 lessons and 52 exercises, written for Ada 2022. All 106 programs on this page went through GNAT 13.3, and every terminal shows exactly what the compiler and the program printed. Stuck on a word? It's in the [glossary](#glossary).
+An entry-level programming course in 16 lessons and 53 exercises, written for Ada 2022. All 107 programs on this page went through GNAT 13.3, and every terminal shows exactly what the compiler and the program printed. Stuck on a word? It's in the [glossary](#glossary).
 
-**0 of 52 done**
+**0 of 53 done**
 
 [Start here0Setup](#setup)[Lesson 1Hello, world](#hello)[Lesson 2Types and variables](#variables)[Lesson 3Arithmetic](#arithmetic)[Lesson 4Input](#input)[Lesson 5Decisions](#decisions)[Lesson 6Loops](#loops)[Lesson 7Your own types](#types)[Lesson 8Arrays](#arrays)[Lesson 9Subprograms](#subprograms)[Lesson 10Strings](#strings)[Lesson 11Records](#records)[Lesson 12Packages](#packages)[Lesson 13Errors](#exceptions)[Lesson 14Contracts](#contracts)[Lesson 15Project](#project)
 
@@ -4168,7 +4168,7 @@ Exercise 10.2
 
 #### Count the vowels
 
-Read a sentence and count its vowels.
+Read a sentence and count its vowels, taking the vowels to be a, e, i, o and u. (Exercise 10.4 deals with y.)
 
 Target output, with typed input underlined
 
@@ -4289,6 +4289,77 @@ Decoded: Meet at the Engine, noon.
 ```
 
 Decoding shifts by −3. `mod` keeps a negative result inside 0 to 25 because it takes the sign of 26. `rem` would go negative and break.
+
+Exercise 10.4
+
+#### Sometimes y
+
+In English, y is sometimes a vowel (gym, happy) and sometimes a consonant (yes, yellow). Extend the vowel counter with a simple rule: a y that starts a word is a consonant, and any other y counts as a vowel.
+
+Target output, with typed input underlined
+
+```
+$ ./vowels_y
+Type a sentence: Yes, my gym is happy
+Vowels: 6
+$ ./vowels_y
+Type a sentence: Beyond the canyon
+Vowels: 7
+```
+
+Hint
+
+Loop over the indexes, `for I in Line'Range`, instead of the characters, so you can look at the one before with `Line (I - 1)`. Check `I > Line'First` first, with `and then`, so you never look before the start. `Is_Letter` tells you whether that character is a letter.
+
+Solution
+
+vowels_y.adb
+
+```
+with Ada.Text_IO;             use Ada.Text_IO;
+with Ada.Characters.Handling; use Ada.Characters.Handling;
+
+procedure Vowels_Y is
+begin
+   Put ("Type a sentence: ");
+   declare
+      Line  : constant String := Get_Line;
+      Count : Natural := 0;
+   begin
+      for I in Line'Range loop
+         case To_Lower (Line (I)) is
+            when 'a' | 'e' | 'i' | 'o' | 'u' =>
+               Count := @ + 1;
+            when 'y' =>
+               --  y starting a word ("yes") is a consonant;
+               --  anywhere else ("gym", "happy") count it as a vowel
+               if I > Line'First and then Is_Letter (Line (I - 1)) then
+                  Count := @ + 1;
+               end if;
+            when others =>
+               null;
+         end case;
+      end loop;
+      Put_Line ("Vowels:" & Count'Image);
+   end;
+end Vowels_Y;
+```
+
+Terminal
+
+```
+$ gnatmake -q -gnat2022 -gnata vowels_y.adb
+$ ./vowels_y
+Type a sentence: Yes, my gym is happy
+Vowels: 6
+$ ./vowels_y
+Type a sentence: Beyond the canyon
+Vowels: 7
+```
+
+The first sentence comes out right: e, y, y, i, a and y make 6. The second shows the limit of any rule that only looks at letters. In "beyond" and "canyon" the y sounds like the y in "yes", but it's in the middle of a word, so the rule counts it, giving 7 instead of 5. Whether a y is a vowel depends on how the word is said, and that isn't in the text. Programs that need to get it right use a pronunciation dictionary.
+
+That's a lesson that goes well beyond vowels: a program does exactly what its rule says, so the hard part is often choosing the rule, and knowing where it stops being true.
 
 11
 
@@ -5801,6 +5872,7 @@ raised ADA.ASSERTIONS.ASSERTION_ERROR : Dynamic_Predicate failed at predicates.a
 ```
 
 - `Static_Predicate` is for rules made of fixed values, ranges and lists, like the five vowels. Because Ada can work out the values in advance, you can loop over the subtype (`for V in Vowel loop`) and test membership with `in`.
+- The predicate says FALSE for `'y'` because it lists exactly five letters. Whether y is a vowel really depends on the word, "gym" against "yes", and a rule about one character can't see the word. Exercise 10.4 tries a better rule, and shows where it still goes wrong.
 - `Dynamic_Predicate` takes any condition, like `Even mod 2 = 0`. It's checked every time a value is stored, which is how `Pairs := Pairs + 3` was caught on line 21. You can't loop over a dynamic predicate, because Ada can't list its values in advance.
 - Inside the rule, the subtype's own name stands for the value being checked: `Even mod 2 = 0` means "this value mod 2 is 0".
 
