@@ -6,3 +6,9 @@ Tabs for Linux, Windows, and Mac.
 
 However, only Linux has been tested, there may be some errors in
 Windows and Mac. If you find anything let me know.
+
+md2html.py is a script that rebuilds the html file from the md file.
+
+python3 md2html.py Ada_2022_from_Zero.md                  # writes Ada_2022_from_Zero.html next to it
+python3 md2html.py Ada_2022_from_Zero.md -o ~/course.html  # pick where it goes
+python3 md2html.py Ada_2022_from_Zero.md --watch           # rebuilds every time you save the .md
