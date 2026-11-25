@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""md2html: turn the "Ada 2022 from Zero" markdown export back into a styled, interactive web page.
+"""md2html: turn an "Ada 2022 from Zero" markdown volume into a styled, interactive web page.
 
 Usage:
     python3 md2html.py Ada_2022_from_Zero.md                 # writes Ada_2022_from_Zero.html
@@ -11,13 +11,16 @@ code, **bold**, *italic*, `code`, [links](url)) converts as usual. On top of tha
 patterns the course export uses and rebuilds the page's features from them:
 
     "# 3" then "## Title" then a paragraph   lesson section with number badge, title and lead
-    "### 2Make a folder"                      numbered setup step
+    "### 2. Make a folder" (or "### 2Make…")   numbered setup step
     a short label line, then a code fence     captioned block:
         Terminal / Target output              terminal styling (prompt, errors in red)
-        name.adb / name.ads                   Ada code: highlighting, line numbers, Copy button
+        name.adb / name.ads / name.gpr        code: highlighting, line numbers, Copy button
+        any other file name ("notes.txt")     a plain file with a Copy button
         anything else ("Fedora")              shell command with a Copy button
+    <pre> … </pre> with <ins>typed</ins>      terminal with the user's typing underlined
     "Exercise 4.2" or "Checkpoint", then "#### Title"   exercise card with a Mark done tick
-    "Hint" / "Solution" / "If it doesn't work" / "Notes" folding sections inside an exercise
+    "Hint" / "Solution" / "If it doesn't work" / "Notes" folding sections inside an exercise,
+        written either as a plain label line or as <details><summary>Hint</summary> … </details>
     "#### Remember" and "#### Common mistakes"          summary panel
     "Your computer", "On Linux" / "On Windows" / "On Mac"  system picker that shows one panel at a time
     "Statement", "Screen afterwards", then "1`Put (...);`" lines   cursor walkthrough, recomputed
@@ -26,6 +29,9 @@ patterns the course export uses and rebuilds the page's features from them:
     a run of "[Lesson 1: Title](#1)" lines              the lesson deck with progress holes
     "## Glossary" then term / definition pairs          glossary list
     "[Lesson 8](#arrays)" style links                   pointed at the right lesson by their text
+    links to other .md files                            pointed at the page built from them
+                                                        (README.md becomes index.html)
+    <!-- comments -->                                   left out, as on GitHub
 
 Anything it can't place is still rendered as ordinary markdown, and a summary with any warnings is
 printed after each build, so you can see when an edit broke a pattern.
@@ -55,6 +61,24 @@ def parse_blocks(text):
                 j += 1
             blocks.append(dict(t="code", text="\n".join(body), lang=lang, line=i + 1))
             i = j + 1
+            continue
+        # HTML comments (such as verify.py's instructions) stay invisible, as on GitHub
+        if line.strip().startswith("<!--"):
+            while i < n and "-->" not in lines[i]:
+                i += 1
+            i += 1
+            continue
+        # GitHub's folding sections: <details><summary>Hint</summary> … </details>
+        # become the same "Hint" / "Solution" labels the rest of the converter knows
+        m = re.match(r"^\s*(?:<details>)?\s*<summary>(.*?)</summary>\s*$", line)
+        if m or re.match(r"^\s*<details>\s*$", line):
+            if m:
+                blocks.append(dict(t="p", text=m.group(1).strip(), line=i + 1))
+            i += 1
+            continue
+        if re.match(r"^\s*</details>\s*$", line):
+            blocks.append(dict(t="enddetails", line=i + 1))
+            i += 1
             continue
         if re.match(r"^<pre>\s*$", line):
             # raw HTML terminal: plain text, with <ins> or <u> around what the user typed
@@ -99,7 +123,7 @@ def parse_blocks(text):
                 break
         else:
             para, j = [line], i + 1
-            while j < n and lines[j].strip() and not re.match(r"^(#{1,6}\s|```|<pre>|\||[-*+]\s|\d+[.)]\s)", lines[j]):
+            while j < n and lines[j].strip() and not re.match(r"^(#{1,6}\s|```|<pre>|\s*</?details>|\s*<summary>|\||[-*+]\s|\d+[.)]\s)", lines[j]):
                 para.append(lines[j])
                 j += 1
             blocks.append(dict(t="p", text=" ".join(s.strip() for s in para), line=i + 1))
@@ -149,6 +173,10 @@ def inline(text, ctx, line=0):
         label, url = m.group(1), m.group(2)
         if url.startswith("#"):
             url = resolve_anchor(url, label, ctx, line)
+        elif not re.match(r"^[a-z][a-z0-9+.-]*:", url, re.I):
+            # a link to another markdown file in the repo: point at the page built from it
+            url = re.sub(r"(^|/)README\.md(?=#|$)", r"\1index.html", url)
+            url = re.sub(r"\.md(?=#|$)", ".html", url)
         return f'<a href="{E(url)}">{label}</a>'
     s = re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)", link, s)
     s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
@@ -260,8 +288,11 @@ def code_figure(caption, code, marked=None):
         return (f'<figure class="{cls}"><figcaption><span>{E(caption)}</span></figcaption>'
                 f"<pre>{terminal_html(marked if underlined else code)}</pre></figure>")
     i = Ids.next("c")
-    if caption and re.search(r"\.ad[bs]$", caption):
+    if caption and re.search(r"\.(ad[bs]|gpr)$", caption):
+        # project files share Ada's keywords, so the same colouring reads right
         body, cls = highlight_ada(code), "code"
+    elif caption and re.match(r"^[\w.-]+(/[\w.-]+)*\.\w+$", caption):
+        body, cls = E(code), "code"          # a data file, like notes.txt: shown as a file, not a command
     else:
         body, cls = E(code), "code sh"
     cap = (f'<figcaption><span>{E(caption or "")}</span>'
@@ -365,6 +396,11 @@ def render(blocks, ctx):
         b = blocks[i]
         t = b["t"]
 
+        if t == "enddetails":
+            o.close_to("details")
+            i += 1
+            continue
+
         # ---------------- headings
         if t == "h":
             text, lvl = b["text"], b["level"]
@@ -429,7 +465,7 @@ def render(blocks, ctx):
             # any other heading ends a system panel
             o.close_to("osp")
             if lvl == 3:
-                m = re.match(r"^(\d+)(\D.*)$", text)
+                m = re.match(r"^(\d+)(?:\.\s+|\s*)(\D.*)$", text)
                 if m and "section" in o.stack:
                     o.add(f'<h3 class="step" id="step-{m.group(1)}"><span class="sn">{m.group(1)}</span>'
                           f'{inline(m.group(2), ctx, b["line"])}</h3>')
