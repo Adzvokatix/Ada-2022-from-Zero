@@ -1,5 +1,7 @@
 # Ada 2022 from Zero
 
+<!-- verify: lesson-folder ~/ada-course -->
+
 An entry-level programming course in 16 lessons and 53 exercises, written for Ada 2022. All 107 programs on this page went through GNAT 13.3, and every terminal shows exactly what the compiler and the program printed. Stuck on a word? It's in the [glossary](#glossary).
 
 **0 of 53 done**
@@ -50,7 +52,7 @@ Do the steps in order. Copy one box, paste it into the terminal, press Enter, an
 
 Your computer
 
-### 1Open a terminal and install the compiler
+### 1. Open a terminal and install the compiler
 
 On Linux
 
@@ -158,7 +160,7 @@ gnatmake --version
 
 The programs in this course were tested on Linux with GNAT 13.3. These Mac install steps follow Alire and GetAda's own instructions rather than a test run here, so if one fails, the exact message is what to search for.
 
-### 2Make a folder for the course
+### 2. Make a folder for the course
 
 Terminal
 
@@ -182,7 +184,7 @@ On Mac
 
 In Finder, choose Go → Home, and it's the `ada-course` folder there.
 
-### 3Create hello.adb with the program in it
+### 3. Create hello.adb with the program in it
 
 This is the program. Press its Copy button:
 
@@ -221,7 +223,7 @@ On Mac
 
 Use the terminal way on a Mac. TextEdit saves formatted text by default and can swap straight quotes for curly ones, which Ada rejects. If you do use TextEdit, choose Format → Make Plain Text first and turn off Edit → Substitutions → Smart Quotes.
 
-### 4Check the file is really there
+### 4. Check the file is really there
 
 Terminal
 
@@ -232,7 +234,7 @@ cat hello.adb
 
 **You should see** `ls` list `hello.adb`, and `cat` print the whole program starting with `with Ada.Text_IO;`. If `cat` prints nothing, the file is empty: go back to step 3. If it prints the commands from this page instead of the program, you pasted the wrong box.
 
-### 5Compile it
+### 5. Compile it
 
 Terminal
 
@@ -254,7 +256,7 @@ On Mac
 
 The program is the file called `hello`.
 
-### 6Run it
+### 6. Run it
 
 Terminal
 
@@ -302,7 +304,7 @@ Done. Mark the checkpoint below and go to lesson 1, which explains every line of
 | `-gnat2022` | Use the Ada 2022 language. GNAT 13 defaults to Ada 2012, so this matters |
 | `-gnata` | Turn on contract checks (lessons 9 and 14). Off by default, so always include it while learning |
 | `hello.adb` | The file to build. The program comes out named `hello` |
-| `gnatclean hello` | Deletes the `.o` and `.ali` leftovers when you want a tidy folder |
+| `gnatclean hello` | Deletes the `.o` and `.ali` leftovers when you want a tidy folder. Never run it with `sudo`: as the administrator it also deletes GNAT's own library files |
 
 One rule trips everyone once: the file name must be the program's name in lower case. `procedure Hello` lives in `hello.adb`; `procedure Fizz_Buzz` in `fizz_buzz.adb`. Every later lesson follows the same routine: save the file, step 5 with the new file name, step 6 with the new program name.
 
@@ -499,12 +501,12 @@ $ grep -n -A2 "procedure Put_Line" /usr/lib/gcc/x86_64-linux-gnu/13/adainclude/a
 
 There are two `Put_Line`s. The first also takes a `File` and writes to that file; the second writes to the screen, and that's the one you've been calling. Ada picks between them by looking at what you pass in, which is called *overloading*. The `with` on line 568 starts a contract, a promise about what the procedure does (lesson 14 reads this one): the same word doing a different job.
 
-Building runs three tools, which `-q` normally hides. Leave it off to watch:
+Building runs three tools, which `-q` normally hides. Leave it off to watch, and add `-f`, for "force": `hello` is already built, and without `-f` gnatmake would only say it's up to date.
 
 Terminal
 
 ```
-$ gnatmake -gnat2022 -gnata hello.adb
+$ gnatmake -f -gnat2022 -gnata hello.adb
 x86_64-linux-gnu-gcc-13 -c -gnat2022 -gnata hello.adb
 x86_64-linux-gnu-gnatbind-13 -x hello.ali
 x86_64-linux-gnu-gnatlink-13 hello.ali
@@ -4771,26 +4773,27 @@ Every subprogram has a specification too: its first line, with its name, paramet
 
 ### The spec is enough to compile a client
 
-Because a client only sees the specification, it can be compiled before the body even exists. Here the folder holds only the spec and the main program. `gcc -c` compiles a single file without trying to build a whole program:
+Because a client only sees the specification, it can be compiled before the body even exists. To see it, delete `main`'s leftovers from the last build with `rm` ("remove"), and move the body out of the way for a moment by renaming it with `mv` ("move"). `gcc -c` compiles a single file without trying to build a whole program:
 
 Terminal
 
 ```
-$ ls
-main.adb
-temperature.ads
+$ rm -f main.o main.ali
+$ mv temperature.adb temperature.adb.saved
+$ ls main* temperature*
+main	  temperature.adb.saved  temperature.ali
+main.adb  temperature.ads	 temperature.o
 $ gcc -c -gnat2022 -gnata main.adb
-$ ls
-main.adb
-main.ali
-main.o
-temperature.ads
+$ ls main* temperature*
+main	  main.ali  temperature.adb.saved  temperature.ali
+main.adb  main.o    temperature.ads	   temperature.o
 $ gnatmake -q -gnat2022 -gnata main.adb
 cannot generate code for file temperature.ads (package spec)
 gnatmake: "temperature.ads" compilation error
+$ mv temperature.adb.saved temperature.adb
 ```
 
-`main.adb` compiled: GNAT checked every call against the specification and produced `main.o`. Only the full build fails, because a specification on its own can't become machine code. That's what lets a team split up the work: one person writes the specification, and others write code against it while the body is still being built.
+`main.adb` compiled: GNAT checked every call against the specification and produced `main.o`. Only the full build fails, because a specification on its own can't become machine code. The last command puts the body back. That's what lets a team split up the work: one person writes the specification, and others write code against it while the body is still being built.
 
 ### The body must keep the spec's promises
 
@@ -5011,7 +5014,28 @@ GNAT refuses. A *selected component* is its name for the dot form, `Savings.Cent
 
 ### Splitting saves rebuilding
 
-Clients depend on the specification, not the body, and `gnatmake` knows it. Build once, leaving off `-q` to watch:
+Clients depend on the specification, not the body, and `gnatmake` knows it. To watch, bring back the temperature program's `main.adb` from the start of this lesson (yours now holds the bank account program):
+
+main.adb
+
+```
+with Ada.Text_IO;       use Ada.Text_IO;
+with Ada.Float_Text_IO; use Ada.Float_Text_IO;
+with Temperature;       use Temperature;
+
+procedure Main is
+   Body_Temp : constant Fahrenheit := 98.6;
+begin
+   Put ("Water boils at ");
+   Put (Float (To_F (Boiling)), Fore => 1, Aft => 1, Exp => 0);
+   Put_Line (" F");
+   Put ("Body temperature is ");
+   Put (Float (To_C (Body_Temp)), Fore => 1, Aft => 1, Exp => 0);
+   Put_Line (" C");
+end Main;
+```
+
+Build it, leaving off `-q` to watch:
 
 Terminal
 
@@ -5023,7 +5047,27 @@ x86_64-linux-gnu-gnatbind-13 -x main.ali
 x86_64-linux-gnu-gnatlink-13 main.ali
 ```
 
-Now change only the body: `To_F`'s formula from `C * 9.0 / 5.0` to `C * 1.8`, which gives the same answer. Build again:
+Now change only the body: `To_F`'s formula from `* 9.0 / 5.0` to `* 1.8`, which gives the same answer.
+
+temperature.adb
+
+```
+package body Temperature is
+
+   --  Only the body can see this: it isn't in the spec.
+   function Round_To_Tenth (X : Float) return Float is
+     (Float'Rounding (X * 10.0) / 10.0);
+
+   function To_F (C : Celsius) return Fahrenheit is
+     (Fahrenheit (Round_To_Tenth (Float (C) * 1.8 + 32.0)));
+
+   function To_C (F : Fahrenheit) return Celsius is
+     (Celsius (Round_To_Tenth ((Float (F) - 32.0) * 5.0 / 9.0)));
+
+end Temperature;
+```
+
+Build again:
 
 Terminal
 
@@ -5034,7 +5078,26 @@ x86_64-linux-gnu-gnatbind-13 -x main.ali
 x86_64-linux-gnu-gnatlink-13 main.ali
 ```
 
-Only `temperature.adb` was recompiled. `main.adb` was left alone, because nothing it can see had changed. Now add a line to the specification, a new constant `Freezing`, and build again:
+Only `temperature.adb` was recompiled. `main.adb` was left alone, because nothing it can see had changed. Now add a line to the specification, a new constant `Freezing`:
+
+temperature.ads
+
+```
+package Temperature is
+
+   type Celsius    is new Float;
+   type Fahrenheit is new Float;
+
+   Boiling  : constant Celsius := 100.0;
+   Freezing : constant Celsius := 0.0;
+
+   function To_F (C : Celsius) return Fahrenheit;
+   function To_C (F : Fahrenheit) return Celsius;
+
+end Temperature;
+```
+
+And build again:
 
 Terminal
 
@@ -5623,7 +5686,7 @@ Enter numbers, one per line. A blank line finishes.
 <ins>x</ins>
   Skipping "x"
 <ins>35</ins>
-
+<ins></ins>
 Average of 3 numbers: 21.67
 </pre>
 
@@ -5678,7 +5741,7 @@ Enter numbers, one per line. A blank line finishes.
 <ins>x</ins>
   Skipping "x"
 <ins>35</ins>
-
+<ins></ins>
 Average of 3 numbers: 21.67
 </pre>
 
@@ -5791,18 +5854,18 @@ raised ADA.ASSERTIONS.ASSERTION_ERROR : failed postcondition from tank_post.adb:
 
 ### Without -gnata, nothing is checked
 
-GNAT skips contract checks unless you ask for them with `-gnata`. This is exactly the program from the precondition section, built without it:
+GNAT skips contract checks unless you ask for them with `-gnata`. This is exactly the program from the precondition section, built without it. The `-f` matters: `tank_pre` is already built with the checks, and a change of switches alone doesn't make gnatmake recompile anything.
 
 Terminal
 
 ```
-$ gnatmake -q -gnat2022 tank_pre.adb
+$ gnatmake -q -f -gnat2022 tank_pre.adb
 $ ./tank_pre
 Tank: 10 gallons
 Tank: 40 gallons
 ```
 
-The contract is still written in the code, but nothing checks it, so the program happily reports 40 gallons in a 26-gallon tank. That's why every command in this course includes `-gnata`. Real projects keep the checks on while developing and testing. Some switch them off in the finished program for speed, but only once testing, or a proof tool (see the end of this lesson), has shown they can't fail.
+The contract is still written in the code, but nothing checks it, so the program happily reports 40 gallons in a 26-gallon tank. (`gnatmake -q -f -gnat2022 -gnata tank_pre.adb` puts the checks back.) That's why every command in this course includes `-gnata`. Real projects keep the checks on while developing and testing. Some switch them off in the finished program for speed, but only once testing, or a proof tool (see the end of this lesson), has shown they can't fail.
 
 ### Contracts are for bugs, not for bad input
 
@@ -6216,7 +6279,7 @@ Enter "name score" lines. A blank line finishes.
   Skipped: score must be a whole number 0 to 100
 &gt; <ins>Edsger Dijkstra 79</ins>
 &gt; <ins>Linus 64</ins>
-&gt; 
+&gt; <ins></ins>
 
 Name              Score  Grade
 Ada                  91    A
@@ -6352,7 +6415,7 @@ Enter "name score" lines. A blank line finishes.
   Skipped: score must be a whole number 0 to 100
 &gt; <ins>Edsger Dijkstra 79</ins>
 &gt; <ins>Linus 64</ins>
-&gt; 
+&gt; <ins></ins>
 
 Name              Score  Grade
 Ada                  91    A
@@ -6369,26 +6432,28 @@ Exercise 15.2
 
 Pick a random number from 1 to 100 and let the player guess, answering Higher or Lower and counting tries. Ignore input that isn't a number.
 
-Target output
+Target output, with typed input underlined
 
-```
+<!-- verify: skip (the secret number is random) -->
+
+<pre>
 $ ./guess
 I'm thinking of a number from 1 to 100.
-Your guess: 50
+Your guess: <ins>50</ins>
 Lower.
-Your guess: 25
+Your guess: <ins>25</ins>
 Lower.
-Your guess: 12
+Your guess: <ins>12</ins>
 Lower.
-Your guess: 6
+Your guess: <ins>6</ins>
 Lower.
-Your guess: 3
+Your guess: <ins>3</ins>
 Lower.
-Your guess: 1
+Your guess: <ins>1</ins>
 Higher.
-Your guess: 2
+Your guess: <ins>2</ins>
 Got it in 7 tries!
-```
+</pre>
 
 The secret number is random, so your guesses and answers will be different.
 
@@ -6441,23 +6506,30 @@ Terminal
 
 ```
 $ gnatmake -q -gnat2022 -gnata guess.adb
+```
+
+Terminal
+
+<!-- verify: skip (the secret number is random) -->
+
+<pre>
 $ ./guess
 I'm thinking of a number from 1 to 100.
-Your guess: 50
+Your guess: <ins>50</ins>
 Lower.
-Your guess: 25
+Your guess: <ins>25</ins>
 Lower.
-Your guess: 12
+Your guess: <ins>12</ins>
 Lower.
-Your guess: 6
+Your guess: <ins>6</ins>
 Lower.
-Your guess: 3
+Your guess: <ins>3</ins>
 Lower.
-Your guess: 1
+Your guess: <ins>1</ins>
 Higher.
-Your guess: 2
+Your guess: <ins>2</ins>
 Got it in 7 tries!
-```
+</pre>
 
 The run above was played by a script that halves the range each time. Halving always finds a number from 1 to 100 in seven guesses or fewer, since 2⁷ = 128.
 
@@ -6483,282 +6555,282 @@ Every term this course uses, in plain words, with a link to the lesson that expl
 
 aggregate
 
-A whole array or record value written out at once, like `[72, 95, 88]`. [Lesson 8](#arrays)
+A whole array or record value written out at once, like `[72, 95, 88]`. [Lesson 8](#8)
 
 argument
 
-The actual value you give a subprogram when you call it: the 7 in `Square (7)`. [Lesson 9](#subprograms)
+The actual value you give a subprogram when you call it: the 7 in `Square (7)`. [Lesson 9](#9)
 
 array
 
-A row of values of one type, each picked out by its index. [Lesson 8](#arrays)
+A row of values of one type, each picked out by its index. [Lesson 8](#8)
 
 Assertion_Error
 
-The exception raised when a contract or predicate fails. [Lesson 14](#contracts)
+The exception raised when a contract or predicate fails. [Lesson 14](#14)
 
 attribute
 
-A built-in fact about a type or value, written after an apostrophe: `X'Image`, `Integer'Last`. [Lesson 2](#variables)
+A built-in fact about a type or value, written after an apostrophe: `X'Image`, `Integer'Last`. [Lesson 2](#2)
 
 body
 
-How a package or subprogram works: its statements. A package body is its `.adb` file. [Lesson 12](#packages)
+How a package or subprogram works: its statements. A package body is its `.adb` file. [Lesson 12](#12)
 
 Boolean
 
-The type with only two values, `True` and `False`. [Lesson 2](#variables)
+The type with only two values, `True` and `False`. [Lesson 2](#2)
 
 branch
 
-The statements under one condition of an `if` or one choice of a `case`. [Lesson 5](#decisions)
+The statements under one condition of an `if` or one choice of a `case`. [Lesson 5](#5)
 
 call
 
-Running a subprogram by writing its name, with any arguments in brackets. [Lesson 9](#subprograms)
+Running a subprogram by writing its name, with any arguments in brackets. [Lesson 9](#9)
 
 case
 
-A statement that picks a branch by comparing one value against lists of choices. [Lesson 5](#decisions)
+A statement that picks a branch by comparing one value against lists of choices. [Lesson 5](#5)
 
 Character
 
-The type of a single letter, digit, space or symbol, written in single quotes: `'J'`. [Lesson 2](#variables)
+The type of a single letter, digit, space or symbol, written in single quotes: `'J'`. [Lesson 2](#2)
 
 client
 
-Code that uses a package. Clients only see the package's specification. [Lesson 12](#packages)
+Code that uses a package. Clients only see the package's specification. [Lesson 12](#12)
 
 compiler
 
-The program (GNAT) that checks your source code and turns it into an executable. [Setup](#setup)
+The program (GNAT) that checks your source code and turns it into an executable. [Setup](#0)
 
 component
 
-Ada's word for a field of a record. [Lesson 11](#records)
+Ada's word for a field of a record. [Lesson 11](#11)
 
 condition
 
-An expression that works out to True or False, like `Score >= 90`. [Lesson 5](#decisions)
+An expression that works out to True or False, like `Score >= 90`. [Lesson 5](#5)
 
 constant
 
-A named value that is set once and can never change. [Lesson 2](#variables)
+A named value that is set once and can never change. [Lesson 2](#2)
 
 contract
 
-A `Pre` or `Post` rule on a subprogram, checked on every call when compiled with `-gnata`. [Lesson 14](#contracts)
+A `Pre` or `Post` rule on a subprogram, checked on every call when compiled with `-gnata`. [Lesson 14](#14)
 
 declaration
 
-A line that creates a name and says what it is, such as `Age : Integer := 34;`. [Lesson 2](#variables)
+A line that creates a name and says what it is, such as `Age : Integer := 34;`. [Lesson 2](#2)
 
 declare block
 
-A `declare ... begin ... end;` section that creates names in the middle of a program. [Lesson 4](#input)
+A `declare ... begin ... end;` section that creates names in the middle of a program. [Lesson 4](#4)
 
 discrete type
 
-A type whose values can be counted one by one: integer types and enumerations, not Float. [Lesson 8](#arrays)
+A type whose values can be counted one by one: integer types and enumerations, not Float. [Lesson 8](#8)
 
 element
 
-One value inside an array. [Lesson 8](#arrays)
+One value inside an array. [Lesson 8](#8)
 
 enumeration
 
-A type whose values are names you list yourself, like `(Mon, Tue, Wed)`. [Lesson 7](#types)
+A type whose values are names you list yourself, like `(Mon, Tue, Wed)`. [Lesson 7](#7)
 
 exception
 
-Ada's signal that something went wrong while the program was running, like `Constraint_Error`. [Lesson 13](#exceptions)
+Ada's signal that something went wrong while the program was running, like `Constraint_Error`. [Lesson 13](#13)
 
 executable
 
-The program file the compiler produces, which you run with `./name`. [Setup](#setup)
+The program file the compiler produces, which you run with `./name`. [Setup](#0)
 
 expression
 
-Anything that works out to a value: `2 + 3`, `Age`, `Square (7)`. [Lesson 3](#arithmetic)
+Anything that works out to a value: `2 + 3`, `Age`, `Square (7)`. [Lesson 3](#3)
 
 field
 
-One named value inside a record, reached with a dot: `Bolt.Qty`. [Lesson 11](#records)
+One named value inside a record, reached with a dot: `Bolt.Qty`. [Lesson 11](#11)
 
 Float
 
-The type for numbers with a fractional part, like `1.82`. [Lesson 2](#variables)
+The type for numbers with a fractional part, like `1.82`. [Lesson 2](#2)
 
 function
 
-A subprogram that calculates and returns a value. [Lesson 9](#subprograms)
+A subprogram that calculates and returns a value. [Lesson 9](#9)
 
 handler
 
-Code in an `exception` section that catches an exception and decides what to do. [Lesson 13](#exceptions)
+Code in an `exception` section that catches an exception and decides what to do. [Lesson 13](#13)
 
 identifier
 
-A name you make up for a variable, constant, procedure or type. [Lesson 2](#variables)
+A name you make up for a variable, constant, procedure or type. [Lesson 2](#2)
 
 if expression
 
-An `if` that produces a value instead of running statements: `(if A then B else C)`. [Lesson 5](#decisions)
+An `if` that produces a value instead of running statements: `(if A then B else C)`. [Lesson 5](#5)
 
 index
 
-The position of an element in an array: `Scores (2)`. [Lesson 8](#arrays)
+The position of an element in an array: `Scores (2)`. [Lesson 8](#8)
 
 Integer
 
-The type for whole numbers; about ±2.1 billion on GNAT. [Lesson 2](#variables)
+The type for whole numbers; about ±2.1 billion on GNAT. [Lesson 2](#2)
 
 iteration
 
-One trip through the statements of a loop. [Lesson 6](#loops)
+One trip through the statements of a loop. [Lesson 6](#6)
 
 keyword
 
-A word with a fixed meaning in Ada, like `begin` or `if`, that can't be used as a name. [Lesson 1](#hello)
+A word with a fixed meaning in Ada, like `begin` or `if`, that can't be used as a name. [Lesson 1](#1)
 
 literal
 
-A value typed straight into the program: `42`, `1.82`, `'J'`, `"Hi"`. [Lesson 1](#hello)
+A value typed straight into the program: `42`, `1.82`, `'J'`, `"Hi"`. [Lesson 1](#1)
 
 local variable
 
-A variable declared inside a subprogram, made fresh on each call. [Lesson 9](#subprograms)
+A variable declared inside a subprogram, made fresh on each call. [Lesson 9](#9)
 
 mod
 
-A remainder that wraps around like a clock; always between 0 and B − 1 for a positive B. [Lesson 3](#arithmetic)
+A remainder that wraps around like a clock; always between 0 and B − 1 for a positive B. [Lesson 3](#3)
 
 'Old
 
-In a postcondition, `X'Old` is the value X had when the call started. [Lesson 14](#contracts)
+In a postcondition, `X'Old` is the value X had when the call started. [Lesson 14](#14)
 
 operand
 
-A value an operator works on: in `A + B`, A and B. [Lesson 3](#arithmetic)
+A value an operator works on: in `A + B`, A and B. [Lesson 3](#3)
 
 operator
 
-A symbol that does a calculation or comparison: `+`, `/`, `<`, `and`. [Lesson 3](#arithmetic)
+A symbol that does a calculation or comparison: `+`, `/`, `<`, `and`. [Lesson 3](#3)
 
 overloading
 
-Several subprograms sharing a name, with Ada picking one by the arguments you pass. [Lesson 1](#hello)
+Several subprograms sharing a name, with Ada picking one by the arguments you pass. [Lesson 1](#1)
 
 package
 
-A named collection of types, constants and subprograms, split into a spec and a body. [Lesson 12](#packages)
+A named collection of types, constants and subprograms, split into a spec and a body. [Lesson 12](#12)
 
 parameter
 
-A name in a subprogram's first line standing for a value it will be given. [Lesson 9](#subprograms)
+A name in a subprogram's first line standing for a value it will be given. [Lesson 9](#9)
 
 postcondition
 
-`Post`: what a subprogram promises is true when it returns. [Lesson 14](#contracts)
+`Post`: what a subprogram promises is true when it returns. [Lesson 14](#14)
 
 precondition
 
-`Pre`: what must be true when a subprogram is called. The caller's promise. [Lesson 14](#contracts)
+`Pre`: what must be true when a subprogram is called. The caller's promise. [Lesson 14](#14)
 
 predicate
 
-A rule attached to a subtype, like "even" or "a vowel", checked when a value goes into it. [Lesson 14](#contracts)
+A rule attached to a subtype, like "even" or "a vowel", checked when a value goes into it. [Lesson 14](#14)
 
 private type
 
-A type whose inside is hidden from clients, who can only use the operations its package offers. [Lesson 12](#packages)
+A type whose inside is hidden from clients, who can only use the operations its package offers. [Lesson 12](#12)
 
 procedure
 
-A named list of statements. Every program starts in a main procedure. [Lesson 1](#hello)
+A named list of statements. Every program starts in a main procedure. [Lesson 1](#1)
 
 propagation
 
-An exception travelling outwards through blocks and calls until a handler catches it. [Lesson 13](#exceptions)
+An exception travelling outwards through blocks and calls until a handler catches it. [Lesson 13](#13)
 
 raise
 
-To signal an exception, either automatically when a rule breaks or with the `raise` statement. [Lesson 13](#exceptions)
+To signal an exception, either automatically when a rule breaks or with the `raise` statement. [Lesson 13](#13)
 
 range
 
-`A .. B`: every value from A to B, both included. Empty when A is bigger than B. [Lesson 6](#loops)
+`A .. B`: every value from A to B, both included. Empty when A is bigger than B. [Lesson 6](#6)
 
 record
 
-A type that bundles values of different types together as named fields. [Lesson 11](#records)
+A type that bundles values of different types together as named fields. [Lesson 11](#11)
 
 rem
 
-The remainder left over from whole-number `/`; it takes the sign of the left number. [Lesson 3](#arithmetic)
+The remainder left over from whole-number `/`; it takes the sign of the left number. [Lesson 3](#3)
 
 'Result
 
-In a function's postcondition, the value the function is about to return. [Lesson 14](#contracts)
+In a function's postcondition, the value the function is about to return. [Lesson 14](#14)
 
 scope
 
-The part of a program where a name can be used. [Lesson 4](#input)
+The part of a program where a name can be used. [Lesson 4](#4)
 
 slice
 
-A piece of an array or String, like `Word (1 .. 4)`. [Lesson 10](#strings)
+A piece of an array or String, like `Word (1 .. 4)`. [Lesson 10](#10)
 
 specification
 
-What a package or subprogram offers: for a package, its `.ads` file; for a subprogram, its first line. [Lesson 12](#packages)
+What a package or subprogram offers: for a package, its `.ads` file; for a subprogram, its first line. [Lesson 12](#12)
 
 statement
 
-One instruction for the computer to carry out, ending in a semicolon. [Lesson 1](#hello)
+One instruction for the computer to carry out, ending in a semicolon. [Lesson 1](#1)
 
 String
 
-The type for text: a row of Characters with a fixed length. [Lesson 2](#variables)
+The type for text: a row of Characters with a fixed length. [Lesson 2](#2)
 
 string literal
 
-Text in double quotes typed straight into the program. [Lesson 1](#hello)
+Text in double quotes typed straight into the program. [Lesson 1](#1)
 
 strongly typed
 
-Every value has exactly one type, and Ada never converts between types unless you ask. [Lesson 2](#variables)
+Every value has exactly one type, and Ada never converts between types unless you ask. [Lesson 2](#2)
 
 subprogram
 
-A procedure or a function. [Lesson 9](#subprograms)
+A procedure or a function. [Lesson 9](#9)
 
 subtype
 
-An existing type with an extra rule, usually a narrower range. It still mixes with its type. [Lesson 7](#types)
+An existing type with an extra rule, usually a narrower range. It still mixes with its type. [Lesson 7](#7)
 
 type
 
-A kind of value: which values are allowed and what you can do with them. [Lesson 2](#variables)
+A kind of value: which values are allowed and what you can do with them. [Lesson 2](#2)
 
 Unbounded_String
 
-A string type that can grow and shrink, unlike a plain String. [Lesson 10](#strings)
+A string type that can grow and shrink, unlike a plain String. [Lesson 10](#10)
 
 use clause
 
-`use Ada.Text_IO;`: lets you write a package's names without the package in front. [Lesson 1](#hello)
+`use Ada.Text_IO;`: lets you write a package's names without the package in front. [Lesson 1](#1)
 
 variable
 
-A named box that holds one value of one type, which can change. [Lesson 2](#variables)
+A named box that holds one value of one type, which can change. [Lesson 2](#2)
 
 with clause
 
-`with Ada.Text_IO;`: gives your program access to a package. [Lesson 1](#hello)
+`with Ada.Text_IO;`: gives your program access to a package. [Lesson 1](#1)
 
 Programs tested with GNAT 13.3 on Ubuntu 24.04, built with `gnatmake -q -gnat2022 -gnata`. The Windows and Mac install steps follow MSYS2's, Alire's and GetAda's own instructions. Each program's output above was captured from a real terminal session; typed input is underlined.
 
-Going further: [learn.adacore.com](https://learn.adacore.com/) (Introduction to Ada, What's New in Ada 2022), the [Ada 2022 Reference Manual](http://www.ada-auth.org/standards/22rm/html/RM-TOC.html), and [Alire](https://alire.ada.dev) for libraries and projects.
+Next: [Volume 2](volume-2/README.md) of this course. Going further: [learn.adacore.com](https://learn.adacore.com/) (Introduction to Ada, What's New in Ada 2022), the [Ada 2022 Reference Manual](http://www.ada-auth.org/standards/22rm/html/RM-TOC.html), and [Alire](https://alire.ada.dev) for libraries and projects.
 
 Your ticks are saved in this browser only.
