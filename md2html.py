@@ -34,6 +34,7 @@ import argparse, html, os, re, sys, time
 from html.parser import HTMLParser
 
 E = html.escape
+TYPED_ON, TYPED_OFF = "\x01", "\x02"   # stand-ins for <ins>…</ins> until the text is escaped
 
 # --------------------------------------------------------------------------- markdown blocks
 
@@ -53,6 +54,21 @@ def parse_blocks(text):
                 body.append(lines[j])
                 j += 1
             blocks.append(dict(t="code", text="\n".join(body), lang=lang, line=i + 1))
+            i = j + 1
+            continue
+        if re.match(r"^<pre>\s*$", line):
+            # raw HTML terminal: plain text, with <ins> or <u> around what the user typed
+            j = i + 1
+            while j < n and lines[j].strip() != "</pre>":
+                j += 1
+            raw = "\n".join(lines[i + 1:j])
+            marked = re.sub(r"<(ins|u)>", TYPED_ON, raw)
+            marked = re.sub(r"</(ins|u)>", TYPED_OFF, marked)
+            stray = re.findall(r"</?[A-Za-z][^>]*>", marked)
+            marked = html.unescape(marked)
+            blocks.append(dict(t="code", text=marked.replace(TYPED_ON, "").replace(TYPED_OFF, ""),
+                               marked=marked, lang="", line=i + 1, stray=stray,
+                               unclosed=j >= n))
             i = j + 1
             continue
         m = re.match(r"^(#{1,6})\s+(.*)$", line)
@@ -83,7 +99,7 @@ def parse_blocks(text):
                 break
         else:
             para, j = [line], i + 1
-            while j < n and lines[j].strip() and not re.match(r"^(#{1,6}\s|```|\||[-*+]\s|\d+[.)]\s)", lines[j]):
+            while j < n and lines[j].strip() and not re.match(r"^(#{1,6}\s|```|<pre>|\||[-*+]\s|\d+[.)]\s)", lines[j]):
                 para.append(lines[j])
                 j += 1
             blocks.append(dict(t="p", text=" ".join(s.strip() for s in para), line=i + 1))
@@ -205,16 +221,18 @@ def highlight_ada(src, numbered=True):
 
 
 def terminal_html(src):
+    def T(s):  # escape, then turn the typed-input markers into <u>
+        return E(s).replace(TYPED_ON, "<u>").replace(TYPED_OFF, "</u>")
     rows = []
     for l in src.split("\n"):
         if l.startswith("$ ") or l == "$":
-            rows.append(f'<span class="pr">$</span> <span class="cm">{E(l[2:])}</span>')
+            rows.append(f'<span class="pr">$</span> <span class="cm">{T(l[2:])}</span>')
         elif re.search(r"\berror:|^raised ", l):
-            rows.append(f'<span class="err">{E(l)}</span>')
+            rows.append(f'<span class="err">{T(l)}</span>')
         elif re.search(r"\bwarning:", l):
-            rows.append(f'<span class="wrn">{E(l)}</span>')
+            rows.append(f'<span class="wrn">{T(l)}</span>')
         else:
-            rows.append(E(l))
+            rows.append(T(l))
     return "\n".join(rows)
 
 
@@ -231,14 +249,16 @@ def is_session(code):
     return any(l.startswith("$ ") or l == "$" for l in code.split("\n"))
 
 
-def code_figure(caption, code):
-    if caption and caption.startswith("Target output"):
-        # the markdown export can't carry the underlining, so don't promise it
-        caption = "Target output, including what the user typed" if "typed" in caption else "Target output"
+def code_figure(caption, code, marked=None):
+    """marked: the same text with TYPED_ON/TYPED_OFF around typed input, from a <pre> block."""
+    underlined = bool(marked and TYPED_ON in marked)
+    if caption and caption.startswith("Target output") and "underlined" in caption and not underlined:
+        # no underline markup in this box, so don't promise it
+        caption = "Target output, including what the user typed"
     if (caption or "").startswith("Target output") or (caption == "Terminal" and is_session(code)):
         cls = "term goal" if caption.startswith("Target output") else "term"
         return (f'<figure class="{cls}"><figcaption><span>{E(caption)}</span></figcaption>'
-                f"<pre>{terminal_html(code)}</pre></figure>")
+                f"<pre>{terminal_html(marked if underlined else code)}</pre></figure>")
     i = Ids.next("c")
     if caption and re.search(r"\.ad[bs]$", caption):
         body, cls = highlight_ada(code), "code"
@@ -319,15 +339,24 @@ def render(blocks, ctx):
         elif b["t"] == "h" and b["text"].lower() == "glossary":
             ctx.ids.add("glossary")
     total_ex = sum(len(v) for v in lesson_ex.values())
-    for b in blocks:
-        if b["t"] == "p" and "underlined" in b["text"] and not b["text"].startswith("Target output"):
+    any_typed = any(TYPED_ON in b.get("marked", "") for b in blocks)
+    for k, b in enumerate(blocks):
+        if b["t"] == "p" and "underlined" in b["text"] and not any_typed:
             ctx.warn(b["line"], "says typed input is underlined, but the markdown has no underline markup")
+        if b["t"] == "p" and b["text"].startswith("Target output") and "underlined" in b["text"]:
+            nb = blocks[k + 1] if k + 1 < len(blocks) else None
+            if not (nb and TYPED_ON in nb.get("marked", "")):
+                ctx.warn(b["line"], "caption promises underlined input, but the box below has no <ins> markup")
+        if b.get("stray"):
+            ctx.warn(b["line"], f"<pre> block has tags other than <ins>/<u>: {b['stray'][:3]}")
+        if b.get("unclosed"):
+            ctx.warn(b["line"], "<pre> block is never closed with </pre>")
 
     o, i, n = Out(), 0, len(blocks)
     title = None
     nav = []
     short = {}
-    stats = dict(code=0, plain=0, terminal=0, target=0, shell=0, exercises=0, os_panels=0, tables=0)
+    stats = dict(code=0, plain=0, terminal=0, target=0, typed=0, shell=0, exercises=0, os_panels=0, tables=0)
 
     def nxt(k=1):
         return blocks[i + k] if i + k < n else None
@@ -553,11 +582,13 @@ def render(blocks, ctx):
 
         if is_label(b) and nb and nb["t"] == "code":
             cap = text
-            o.add(code_figure(cap, nb["text"]))
+            o.add(code_figure(cap, nb["text"], nb.get("marked")))
             kind = ("target" if cap.startswith("Target output")
                     else "terminal" if cap == "Terminal" and is_session(nb["text"])
                     else "code" if re.search(r"\.ad[bs]$", cap) else "shell")
             stats[kind] += 1
+            if TYPED_ON in nb.get("marked", "") and kind in ("target", "terminal"):
+                stats["typed"] += 1
             i += 2
             continue
 
@@ -653,6 +684,7 @@ pre{margin:0;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.55;t
 pre b,.hl b{font-weight:400}pre b.k,.hl b.k{font-weight:700;color:var(--kw)}pre b.s,pre b.n,.hl b.s,.hl b.n{color:var(--str)}pre b.a,.hl b.a{color:var(--att)}pre i.c,.hl i.c{color:var(--com);font-style:normal}
 .term{background:#121211;color:#e9e9e3;border:1px solid #121211}
 .term figcaption{color:#9c9c95;border-bottom:1px solid #2c2c29}.goal figcaption span{color:#ffe600}
+.term u{color:#fff;font-weight:700;text-decoration:underline 2px #ffe600;text-underline-offset:4px}
 .term .pr{color:#8d8d86}.term .cm{color:#fff;font-weight:700}.term .err{color:#ff8a7a}.term .wrn{color:#f2c46b}
 .scroll{overflow-x:auto;margin:16px 0}
 table{border-collapse:collapse;width:100%;font-size:15px}
@@ -843,7 +875,8 @@ def build(src, dst, quiet=False):
         print(f"{src} -> {dst}  ({len(page):,} bytes)")
         print(f"  {stats['lessons']} lessons, {stats['exercises']} exercises, {stats['code']} Ada files, "
               f"{stats['plain']} unlabelled code blocks, "
-              f"{stats['terminal']} terminals, {stats['target']} target outputs, {stats['shell']} shell boxes, "
+              f"{stats['terminal']} terminals, {stats['target']} target outputs, "
+              f"{stats['typed']} boxes with typed input underlined, {stats['shell']} shell boxes, "
               f"{stats['tables']} tables, {stats['os_panels']} system panels")
         print("  warnings:" if problems else "  no warnings")
         for p in problems:
